@@ -200,7 +200,7 @@ test("the real model loads on activation and controls preserve explosion across 
   await expect(page.locator("#part-count")).toHaveText("15");
   await expect(page.locator("#explode")).toHaveValue("100");
   await page.locator('[data-part="glass"]').click();
-  await expect(page.locator(".dim-note")).toContainText("High option");
+  await expect(page.locator(".dim-note")).toContainText("Added at High");
   await page.screenshot({
     path: "tmp/screenshots/desktop-exploded.png",
     fullPage: true,

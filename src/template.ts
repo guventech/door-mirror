@@ -59,14 +59,14 @@ export const workbenchMarkup = /* HTML */ ` <header class="site-header">
             <div class="stage-top">
               <span class="stage-label">ASSEMBLY VIEW</span
               ><span class="stage-status" id="stage-status"
-                >STATIC PREVIEW</span
+                >PREVIEW IMAGE</span
               >
             </div>
             <img
               class="poster"
               id="poster"
               src="/mirror/poster.png"
-              alt="Original generic door mirror with a pale cover, dark housing and blue-grey glass"
+              alt="Assembled generic door mirror with its glass, housing and mounting base"
             />
             <div class="canvas-host" id="canvas-host"></div>
             <div class="load-panel" id="load-panel">
@@ -75,14 +75,17 @@ export const workbenchMarkup = /* HTML */ ` <header class="site-header">
                 viewer <span aria-hidden="true">↗</span>
               </button>
               <p id="load-message" role="status">
-                Rotate. Take apart. Look closer.
+                Load the 3D model to rotate it, or pick a part below to read
+                about it.
               </p>
             </div>
             <div class="stage-bottom">
               <span class="axis-symbol" aria-hidden="true"
                 >↗ <span>Y</span><br />↳ X</span
               >
-              <p id="gesture-hint">A still preview. Load 3D to explore.</p>
+              <p id="gesture-hint">
+                Preview image. Load the 3D model to rotate and explode it.
+              </p>
               <button
                 class="reset-button"
                 id="reset-view"
@@ -133,12 +136,16 @@ export const workbenchMarkup = /* HTML */ ` <header class="site-header">
               ${levels.map((l) => `<button data-level="${l}" aria-pressed="${l === "Low"}">${l}<span>${l === "Low" ? "Essential" : l === "Mid" ? "Comfort" : "Full feature"}</span></button>`).join("")}
             </div>
             <p class="spec-helper">
-              Low is the basic specification.<br />Mid and High add optional
-              parts.
+              Low is the basic specification. Mid and High add optional parts.
+              Selecting an optional part switches the model to the specification
+              level that includes it.
             </p>
             <div class="spec-summary">
               <strong id="part-count">9</strong
-              ><span>parts &amp; features<br />in this specification</span
+              ><span
+                >parts in this specification<br /><span id="part-total"
+                  >${parts.length} across all levels</span
+                ></span
               ><span class="spec-summary-icon" aria-hidden="true">⊞</span>
             </div>
           </div>
@@ -148,16 +155,24 @@ export const workbenchMarkup = /* HTML */ ` <header class="site-header">
               <span class="small-label">SELECT A PART ↘</span>
             </div>
             <div class="parts-list" id="parts-list">
-              ${parts.map((p, i) => `<button class="part-row" data-part="${p.id}" aria-pressed="false"><span class="part-number">${String(i + 1).padStart(2, "0")}</span><span class="part-name">${p.name}</span><span class="part-badge ${p.level.toLowerCase()}">${badge(p.level)}</span><span class="row-arrow" aria-hidden="true">↗</span></button>`).join("")}
+              ${parts.map((p, i) => `<button class="part-row" data-part="${p.id}" aria-pressed="false" aria-label="${p.name}, ${badge(p.level)}"><span class="part-number">${String(i + 1).padStart(2, "0")}</span><span class="part-name">${p.name}</span><span class="part-badge ${p.level.toLowerCase()}">${badge(p.level)}</span><span class="row-arrow" aria-hidden="true">↗</span></button>`).join("")}
+            </div>
+            <div class="parts-notes" aria-label="Part notes">
+              ${parts.map((p) => `<details class="part-note" data-part-note="${p.id}"><summary>${p.name} · ${badge(p.level)}</summary><p><strong>What it does.</strong> ${p.description}</p><p><strong>A cost idea.</strong> ${p.idea}</p><p><strong>Still to check.</strong> ${p.check}</p></details>`).join("")}
             </div>
           </div>
         </aside>
       </div>
+      <p class="provenance">
+        Illustrative study, not validated. This is a generic model I built
+        myself. It is not based on any manufacturer's or supplier's drawings,
+        parts or cost data.
+      </p>
       <div class="workbench-footer">
         <span
-          ><span class="legend-dot"></span> Standard
-          <span class="legend-dot mid-dot"></span> Mid option
-          <span class="legend-dot high-dot"></span> High option</span
+          ><span class="legend-dot"></span> In Low spec
+          <span class="legend-dot mid-dot"></span> Added at Mid
+          <span class="legend-dot high-dot"></span> Added at High</span
         ><span>ILLUSTRATIVE DESIGN · QUALITATIVE COST IDEAS</span>
       </div>
     </section>
@@ -180,6 +195,10 @@ export const workbenchMarkup = /* HTML */ ` <header class="site-header">
             This study explores those choices through an original generic model.
             The ideas are illustrative engineering approaches, not measured
             savings or a production design.
+          </p>
+          <p>
+            This is a generic model I built myself. It is not based on any
+            manufacturer's or supplier's drawings, parts or cost data.
           </p>
         </div>
         <div class="note-index">

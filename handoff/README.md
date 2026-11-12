@@ -2,6 +2,8 @@
 
 The website checkout at `C:\Users\guven\projects\site` is outside this session's writable workspace. It has not been edited or deployed. This folder contains the website patch, a matching browser regression test and a local application script.
 
+For the 12 Nov 2026 teardown review (counter, vocabulary, provenance, insight accuracy and TR/NL note), also apply `teardown-review-fixes.md` after the showcase patch.
+
 ## Apply in the website project
 
 Open a Codex session in `C:\Users\guven\projects\site` and give it this task:
@@ -33,7 +35,7 @@ The script checks the text patch before writing and refuses to replace locally e
 - The personal project cards are shown directly. An empty projects array cannot leave a heading behind.
 - The theme button gains a visible Theme label on the Guven profile. Its accessible action label remains. The shared component's default appearance is unchanged for the neutral homepage.
 - Opening evidence scrolls its summary clear of the site header or the phone dialog header.
-- On phones, Load 3D viewer opens a native full-screen dialog. It has a sticky Close viewer button, background scroll locking, native focus containment, Escape handling, page-position restoration and an Open full screen button for reopening. The same canvas stays mounted when the website dialog closes.
+- On phones, Load 3D viewer opens a native full-screen dialog. It has a fixed Close viewer button, background scroll locking, native focus containment, Escape handling, page-position restoration and an Open full screen button for reopening. The same canvas stays mounted when the website dialog closes.
 - Pinch zoom and free rotation are enabled inside the phone dialog. Inline views retain normal page scrolling. Zoom buttons remain available.
 
 ## What was checked here

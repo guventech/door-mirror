@@ -7,6 +7,7 @@ import {
   levels,
   activeParts,
   badge,
+  inactiveLabel,
   levelForPart,
   selectionAtLevel,
 } from "./parts.ts";
@@ -99,7 +100,7 @@ function showDetails(id: PartId, focus = true) {
       <p>${p.description}</p>
       <h3>A cost idea</h3>
       <p>${p.idea}</p>
-      ${dim ? `<p class="dim-note"><strong>High option: auto-dimming.</strong> ${dim.description} ${dim.idea}</p>` : ""}
+      ${dim ? `<p class="dim-note"><strong>Added at High: auto-dimming.</strong> ${dim.description} ${dim.idea}</p>` : ""}
       <h3>Still to check</h3>
       <p class="detail-check">${p.check}${dim ? ` ${dim.check}` : ""}</p>
       <details class="detail-evidence">
@@ -146,11 +147,24 @@ function updateRows() {
     .querySelectorAll<HTMLButtonElement>("[data-part]")
     .forEach((button) => {
       const id = button.dataset.part as PartId;
-      button.classList.toggle("inactive", !active.has(id));
+      const part = parts.find((p) => p.id === id)!;
+      const inSpec = active.has(id);
+      button.classList.toggle("inactive", !inSpec);
       button.setAttribute("aria-pressed", String(selected === id));
-      button.title = active.has(id)
-        ? `Explore ${parts.find((p) => p.id === id)!.name}`
+      button.setAttribute(
+        "aria-label",
+        inSpec
+          ? `${part.name}, ${badge(part.level)}`
+          : `${part.name}, ${badge(part.level)}, ${inactiveLabel()}`,
+      );
+      button.title = inSpec
+        ? `Explore ${part.name}`
         : `Switch to ${levelForPart(id)} to explore this option`;
+    });
+  document
+    .querySelectorAll<HTMLDetailsElement>("[data-part-note]")
+    .forEach((note) => {
+      note.open = note.dataset.partNote === selected;
     });
 }
 function setLevel(next: Level) {
@@ -242,7 +256,7 @@ function failViewer() {
   viewer = undefined;
   el("load-panel").hidden = false;
   el("poster").hidden = false;
-  el("stage-status").textContent = "STATIC PREVIEW";
+  el("stage-status").textContent = "PREVIEW IMAGE";
   el("load-message").textContent =
     "The 3D viewer could not load. You can still explore every part below.";
   const button = el<HTMLButtonElement>("load-viewer");

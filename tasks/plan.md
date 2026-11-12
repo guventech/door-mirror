@@ -1,14 +1,14 @@
 # Standalone door mirror implementation
 
-## Recovered showcase fixes
+## Showcase fixes
 
-The interrupted session left the six requested fixes in the local source and `handoff/site-showcase.patch`. They have not been applied to the destination website or deployed. The homepage is untouched.
+The requested fixes are in the local source and `handoff/site-showcase.patch`. They have not been applied to the destination website or deployed. The homepage is untouched.
 
-Recovery verification passed 21 unit/geometry/asset tests, TypeScript, the production build and 17 Chrome browser tests. Two browser tests use an optional local React fixture at desktop and 390px. They do not verify the full Next.js profile page. The fixture is ignored temporary data, so those two tests skip when it is absent. Run the supplied handoff tests in the website project for final integration coverage.
+The 12 Nov 2026 teardown review is addressed in the standalone app. Badges now say In Low spec / Added at Mid / Added at High. The counter shows the active count and the total across all levels. Provenance, preview wording, housing consistency, HTML part notes and stronger insight hedges are in place. Keep Low/Mid/High names. Website copy follow-up is in `handoff/teardown-review-fixes.md`.
 
-Current GLB: 1,604,736 bytes, 29,604 triangles and 68 meshes. Final exploded bounding boxes are separate in Low, Mid and High. Safari and physical phone coverage remain unavailable. See handoff/README.md for the remaining website step.
+Verification for the earlier showcase set passed 21 unit/geometry/asset tests, TypeScript, the production build and 17 Chrome browser tests. Re-run the suite after the review copy changes. Safari and physical phone coverage remain unavailable. See handoff/README.md for the remaining website step.
 
-Updated 12 November 2026. Local implementation is complete. The user changed the original site-integration scope to a new project in this directory. No existing site was edited or deployed.
+Updated 12 November 2026. Local review fixes are complete. No existing site was edited or deployed.
 
 ## Architecture
 

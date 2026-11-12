@@ -76,5 +76,6 @@ The first publication was completed by the owner and independently verified at c
 - [x] Add phone full-screen loading, Close, reopening and pinch zoom.
 - [x] Prepare website corrections for selection styling, copy, projects, theme label and evidence scrolling.
 - [x] Check the patched React components at desktop and 390px in a local test page.
-- [ ] Apply the handoff patch in the website workspace and run the full Next.js workflow.
+- [x] Address the 12 Nov 2026 teardown review in standalone: counter, Low/Mid/High badges, helper copy, provenance, housing wording, HTML part notes and insight accuracy.
+- [ ] Apply the handoff patch and `handoff/teardown-review-fixes.md` in the website workspace.
 - [ ] Check the live profile, Safari and physical phone hardware.

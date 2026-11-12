@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import {
   parts,
   activeParts,
+  badge,
+  inactiveLabel,
   levelForPart,
   positionAt,
   selectionAtLevel,
@@ -63,6 +65,17 @@ test("public captions stay qualitative and use short plain punctuation", () => {
     assert.ok(part.idea.length > 40);
   }
   assert.equal(new Set(parts.map((p) => p.id)).size, parts.length);
+});
+test("specification badges use one Low Mid High vocabulary", () => {
+  assert.equal(badge("Low"), "In Low spec");
+  assert.equal(badge("Mid"), "Added at Mid");
+  assert.equal(badge("High"), "Added at High");
+  assert.equal(inactiveLabel(), "Not in this spec");
+  for (const part of parts) {
+    assert.doesNotMatch(part.description, /\bshell\b/i);
+    assert.doesNotMatch(part.idea, /\bshell\b/i);
+    assert.doesNotMatch(part.check, /\bshell\b/i);
+  }
 });
 
 test("every insight has limits and all retained evidence uses neutral hosts", () => {

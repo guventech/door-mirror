@@ -416,6 +416,47 @@ input[type="range"]::-moz-range-thumb {
 .part-row[aria-pressed="true"] .row-arrow {
   color: var(--accent);
 }
+.parts-notes {
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.part-note {
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--sunken);
+  padding: 0 10px;
+}
+.part-note summary {
+  cursor: pointer;
+  font-size: 10px;
+  padding: 10px 0;
+  list-style: none;
+}
+.part-note summary::-webkit-details-marker {
+  display: none;
+}
+.part-note[open] summary {
+  font-weight: 600;
+  border-bottom: 1px solid var(--line);
+}
+.part-note p {
+  margin: 10px 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+.provenance {
+  margin: 0;
+  padding: 12px 23px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--muted);
+}
 .workbench-footer {
   padding: 16px 23px;
   border-top: 1px solid var(--line);

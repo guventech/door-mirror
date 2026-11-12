@@ -22,12 +22,23 @@ Heading: Cost teardown: door mirror.
 Intro: A generic exterior mirror. Take it apart to explore the decisions behind a lower-cost design.
 Primary: Load 3D viewer.
 Controls: Low, Mid, High, Assembly, Exploded, Animate explode, Stop animation, Reset view, Zoom in, Zoom out, Close part details.
-Helper: Low is the basic specification. Mid and High add optional parts.
-Poster: Explore the parts without loading 3D, or open the interactive viewer.
+Keep the Low/Mid/High level names. Do not rename Low to Base.
+Label the control group Specification level.
+Badges: In Low spec, Added at Mid, Added at High.
+Inactive state: Not in this spec.
+Helper: Low is the basic specification. Mid and High add optional parts. Selecting an optional part switches the model to the specification level that includes it.
+Counter: show the active count in this specification and the total across all levels.
+Preview status: Preview image.
+Static hint: Preview image. Load the 3D model to rotate and explode it.
+Load hint: Load the 3D model to rotate it, or pick a part below to read about it.
+Poster alt: Assembled generic door mirror with its glass, housing and mounting base.
+Provenance: This is a generic model I built myself. It is not based on any manufacturer's or supplier's drawings, parts or cost data.
 Loading: Preparing the 3D viewer.
 Failure: The 3D viewer could not load. You can still explore every part below.
 Retry: Try again.
 Gesture hint: Drag to rotate. Select a part to explore.
+Keep one public name per part. Prefer housing over shell in visible copy.
+Part notes stay in the HTML through expandable details so the study remains useful without WebGL or selection.
 Captions: the later manufacturing review supersedes the original brief where a claim was too broad. Each entry in src/parts.ts separates function, conditional cost idea and required checks. src/evidence.ts provides primary-source links with neutral labels. Source URLs may identify their publishers, while displayed showcase text stays free of supplier names and branded savings.
 
 ## Architecture and delivery
