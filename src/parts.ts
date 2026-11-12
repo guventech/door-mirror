@@ -220,7 +220,20 @@ export function positionAt(
   rest: readonly number[],
   offset: readonly number[],
   amount: number,
+  path?: readonly { at: number; offset: readonly number[] }[],
+  finish = 1,
 ) {
   const t = Math.max(0, Math.min(1, amount));
-  return rest.map((value, i) => value + offset[i] * t);
+  if (path?.length) {
+    const next = path.findIndex((key) => key.at >= t);
+    if (next === 0) return rest.map((value, i) => value + path[0].offset[i]);
+    const end = path[next < 0 ? path.length - 1 : next];
+    const start = path[Math.max(0, (next < 0 ? path.length - 1 : next) - 1)];
+    const fraction = Math.min(1, (t - start.at) / (end.at - start.at));
+    return rest.map(
+      (value, i) =>
+        value + start.offset[i] + (end.offset[i] - start.offset[i]) * fraction,
+    );
+  }
+  return rest.map((value, i) => value + offset[i] * Math.min(1, t / finish));
 }

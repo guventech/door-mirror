@@ -4,7 +4,7 @@ User approved standalone implementation on 12 November 2026. The original site-i
 
 ## Design
 
-An engineering workbench, with warm ivory surfaces, dark ink, muted orange accents and a large studio view. Desktop: canvas left, inspector right. Mobile: canvas, controls, inspector in normal scroll order. No contact links until real integration targets exist.
+An engineering workbench using the bircans.com neutral surfaces, teal accents, light and dark themes and a large studio view. Desktop: canvas left, inspector right. Mobile: canvas, controls, inspector in normal scroll order. No contact links until real integration targets exist.
 
 Primary task: load the model, separate its parts and inspect a cost idea. English first. No external fonts, images, scripts or models. The illustration is an original generic design.
 
@@ -14,7 +14,7 @@ Keep housing, cap, glass, heater, actuator, base, gasket, harness, fasteners, fo
 
 Low has nine groups. Mid adds foldMotor and turnSignal. High adds puddleLamp, blindSpot, camera and the autoDim state. Inactive list items are visible and explain their level. Selecting an inactive option switches to its required level. Hidden geometry cannot be picked. Switching level clears an incompatible selection but preserves explosion and camera.
 
-Group extras own explode offsets. All transforms are recomputed from rest positions. Raycast on pointer-up and suppress selection after any drag over six pixels. Keyboard users can select every part through the HTML list. Esc closes the inspector detail. Glass on High shows its standard idea and the High option idea.
+Group extras own explode offsets and staged paths. The optical stack separates first, then the bracket lifts through the open face before sliding sideways. All transforms are recomputed from rest positions. Raycast on pointer-up and suppress selection after any drag over six pixels. Keyboard users can select every part through the HTML list. Esc closes the inspector detail. Glass on High shows its standard idea and the High option idea.
 
 ## Copy and controls
 

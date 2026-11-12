@@ -6,9 +6,18 @@ export const workbenchMarkup = /* HTML */ ` <header class="site-header">
       ><span
         >GUVEN <span class="wordmark-light">/ ENGINEERING NOTES</span></span
       ></a
-    ><a class="header-link" href="#about"
-      >About this project <span aria-hidden="true">↗</span></a
     >
+    <div class="header-actions">
+      <button
+        id="theme-toggle"
+        class="theme-toggle"
+        aria-label="Switch to light theme"
+      >
+        Light theme</button
+      ><a class="header-link" href="#about"
+        >About this project <span aria-hidden="true">↗</span></a
+      >
+    </div>
   </header>
   <main id="mirror">
     <section class="intro" aria-labelledby="page-title">

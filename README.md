@@ -42,7 +42,7 @@ npm run build
 
 The asset command merges compatible geometry within each selectable group and exports `public/mirror/mirror.glb`. It also writes measured statistics to `public/mirror/model-info.json`. The browser suite captures a transparent poster from the actual Low-spec scene. Copy it after intentional geometry or framing changes, not after every test run.
 
-The current GLB is 1,602,840 bytes with 29,604 triangles, 14 selectable groups and 68 render meshes. The fifteenth logical entry, auto-dimming, changes the existing glass surface. Materials and dimensions are illustrative. The model is a visualization, not a manufacturing drawing or a validated structural design.
+The current GLB is 1,603,404 bytes with 29,604 triangles, 14 selectable groups and 68 render meshes. The fifteenth logical entry, auto-dimming, changes the existing glass surface. Materials and dimensions are illustrative. The model is a visualization, not a manufacturing drawing or a validated structural design.
 
 ## Manufacturing evidence
 
@@ -66,9 +66,13 @@ This establishes a clearer representative architecture. Tool release, exact wall
 
 ## Later site integration
 
+**Start with [the Bircans integration handoff](docs/INTEGRATE_BIRCANS.md).** It gives the recommended `/guven#mirror` placement, inspected destination paths, file-copy map, framework adaptations, theme tokens, testing checklist and a prompt for the agent in the other repo.
+
 This app is local and independent. It has no deployment configuration, analytics, accounts or contact form. Existing websites have not been changed.
 
-Use the viewer lifecycle API and parts registry inside the target site's component. Keep the dynamic import inside explicit activation. Copy the local assets to the intended same-origin directory and adjust asset URLs and styles to the host. Dispose the viewer when its component unmounts. Move the English copy into the host's dictionaries and add translations before exposing the section in other languages. Add CV/contact links only when actual destinations are available.
+Use the viewer lifecycle API and parts registry inside the target site's component. `createViewer` accepts an explicit `modelUrl` and localized `canvasLabel` so the renderer works without Vite. Keep the dynamic import inside explicit activation. Copy the local assets to the intended same-origin directory and adjust asset URLs and styles to the host. Dispose the viewer when its component unmounts. Move the English copy into the host's dictionaries and add translations before exposing the section in other languages. Add CV/contact links only when actual destinations are available.
+
+Keep the new model's `explodePath` / `explodeFinish` metadata and the full `positionAt` helper together. The optical stack now separates first, then the bracket lifts through the front opening before moving sideways. This prevents the earlier bracket/housing overlap. The standalone preview also follows the host's light/dark palette and `gb-theme` preference. The host should reuse its existing theme controller rather than copy the preview controller.
 
 Production output uses same-origin runtime assets. The HTML CSP allows a loopback WebSocket for Vite's local development connection. The eventual host must apply its own production CSP without broadening it for remote scripts or models.
 

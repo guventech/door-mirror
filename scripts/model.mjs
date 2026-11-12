@@ -288,7 +288,7 @@ export function createMirror() {
   const group = (name, explode) => {
     const g = new T.Group();
     g.name = name;
-    g.userData = { explode };
+    g.userData = { explode, explodeFinish: 0.35 };
     root.add(g);
     return g;
   };
@@ -422,7 +422,14 @@ export function createMirror() {
       [side * 0.43, 0.27, 0.05],
       0.025,
     );
-  const base = group("base", [-1.45, -0.2, -0.15]);
+  const base = group("base", [-2, -0.15, 0.7]);
+  // Clear the optical stack, lift through the mouth, then move sideways.
+  base.userData.explodePath = [
+    { at: 0, offset: [0, 0, 0] },
+    { at: 0.35, offset: [0, 0, 0] },
+    { at: 0.65, offset: [0, 0, 0.55] },
+    { at: 1, offset: [-2, -0.15, 0.7] },
+  ];
   const footOutline = new T.Shape();
   footOutline.moveTo(-0.26, -0.715);
   footOutline.lineTo(0.26, -0.715);
@@ -499,7 +506,13 @@ export function createMirror() {
   spindle.rotation.x = -Math.PI / 2;
   spindle.name = "basePivotSpindle";
   spindle.userData.feature = "verticalPivot";
-  const gasket = group("gasket", [-2.25, -0.2, -0.15]);
+  const gasket = group("gasket", [-2.8, -0.15, 0.7]);
+  gasket.userData.explodePath = [
+    { at: 0, offset: [0, 0, 0] },
+    { at: 0.35, offset: [0, 0, 0] },
+    { at: 0.65, offset: [0, 0, 0.55] },
+    { at: 1, offset: [-2.8, -0.15, 0.7] },
+  ];
   const sealShape = new T.Shape();
   sealShape.moveTo(-0.33, -0.74);
   sealShape.lineTo(0.33, -0.74);

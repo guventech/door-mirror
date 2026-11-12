@@ -1,6 +1,45 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+test("site theme tokens work in dark and light mode and the choice persists", async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto("/");
+  await expect(page.locator("html")).not.toHaveClass(/light/);
+  expect(
+    await page
+      .locator("html")
+      .evaluate((el) =>
+        getComputedStyle(el).getPropertyValue("--color-accent").trim(),
+      ),
+  ).toBe("#6cc0d2");
+  const dark = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(dark.violations).toEqual([]);
+  await page.getByRole("button", { name: /Load 3D viewer/ }).click();
+  await expect(page.locator("#stage-status")).toHaveText("LIVE 3D");
+  await page.locator("#explode").fill("100");
+  await page.screenshot({
+    path: "tmp/screenshots/site-dark-exploded.png",
+    fullPage: true,
+  });
+  await page
+    .getByRole("button", { name: "Switch to light theme", exact: true })
+    .click();
+  await expect(page.locator("html")).toHaveClass(/light/);
+  expect(
+    await page
+      .locator("html")
+      .evaluate((el) =>
+        getComputedStyle(el).getPropertyValue("--color-accent").trim(),
+      ),
+  ).toBe("#0f4c5c");
+  await page.reload();
+  await expect(page.locator("html")).toHaveClass(/light/);
+});
+
 test("the workbench has no automatically detected accessibility violations", async ({
   page,
 }) => {
@@ -67,7 +106,7 @@ test("housing interior remains visible in exploded front and rear views", async 
     path: "tmp/screenshots/housing-front.png",
   });
   const box = (await canvas.boundingBox())!;
-  await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+  await canvas.hover({ position: { x: box.width * 0.5, y: box.height * 0.5 } });
   await page.mouse.down();
   await page.mouse.move(
     box.x + box.width * 0.5 + 280,
@@ -84,10 +123,12 @@ test("housing interior remains visible in exploded front and rear views", async 
   await expect(
     page.getByRole("heading", { name: "Housing", exact: true }),
   ).toBeVisible();
-  const rear = await canvas.screenshot({
+  await expect
+    .poll(async () => (await canvas.screenshot()).equals(front))
+    .toBe(false);
+  await canvas.screenshot({
     path: "tmp/screenshots/housing-rear.png",
   });
-  expect(rear.equals(front)).toBe(false);
 });
 
 test("first paint stays static and the parts explorer works without loading 3D", async ({

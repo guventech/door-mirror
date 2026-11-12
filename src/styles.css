@@ -1,18 +1,63 @@
 @import url("./workbench.css");
 
 :root {
-  font-family: Arial, Helvetica, sans-serif;
-  color: #29312e;
-  background: #f3f1eb;
+  font-family: var(--font-geist, ui-sans-serif, system-ui, sans-serif);
+  color: var(--ink);
+  background: var(--paper);
   font-synthesis: none;
   font-weight: 400;
-  --paper: #f3f1eb;
-  --ink: #29312e;
-  --muted: #5f685e;
-  --line: #d9dad2;
-  --accent: #b74d2b;
-  --surface: #faf9f5;
+  color-scheme: dark;
+  --color-paper: #0e1012;
+  --color-paper-elevated: #16191c;
+  --color-paper-sunken: #0a0b0d;
+  --color-ink: #f2efe9;
+  --color-ink-soft: #b3b0a8;
+  --color-muted: #a8a49c;
+  --color-line: #2a2e33;
+  --color-accent: #6cc0d2;
+  --color-accent-hover: #8dd0de;
+  --color-accent-soft: color-mix(in srgb, #6cc0d2 16%, #0e1012);
+  --color-on-accent: #0e1012;
+  --paper: var(--color-paper);
+  --surface: var(--color-paper-elevated);
+  --sunken: var(--color-paper-sunken);
+  --ink: var(--color-ink);
+  --ink-soft: var(--color-ink-soft);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --accent: var(--color-accent);
+  --accent-hover: var(--color-accent-hover);
+  --accent-soft: var(--color-accent-soft);
+  --on-accent: var(--color-on-accent);
+  --stage: #20282b;
+  --stage-dot: #3d494d;
+  --stage-ink: #c4c9c5;
+  --mid-fill: #193238;
+  --mid-ink: #8dd0de;
+  --high-fill: #2b2a25;
+  --high-ink: #d9ccaa;
   --mono: "Courier New", monospace;
+}
+html.light {
+  color-scheme: light;
+  --color-paper: #f7f5f1;
+  --color-paper-elevated: #ffffff;
+  --color-paper-sunken: #efece5;
+  --color-ink: #16181b;
+  --color-ink-soft: #4a4f56;
+  --color-muted: #5f646b;
+  --color-line: #ddd8ce;
+  --color-accent: #0f4c5c;
+  --color-accent-hover: #0b3a47;
+  --color-accent-soft: color-mix(in srgb, #0f4c5c 10%, #f7f5f1);
+  --color-on-accent: #ffffff;
+  --stage: #efece5;
+  --stage-dot: #c9c5bc;
+  --stage-ink: #535b62;
+  --mid-fill: #e3eff0;
+  --mid-ink: #0f4c5c;
+  --high-fill: #eee9dc;
+  --high-ink: #65573b;
 }
 * {
   box-sizing: border-box;
@@ -66,7 +111,7 @@ button:enabled:hover {
 .site-header,
 main,
 .site-footer {
-  max-width: 1440px;
+  max-width: 1280px;
   margin: auto;
 }
 .site-header {
@@ -136,6 +181,7 @@ main {
   margin-top: 22px;
 }
 h1 {
+  font-family: var(--font-serif, Georgia, "Times New Roman", serif);
   font-size: clamp(40px, 4.4vw, 65px);
   font-weight: 500;
   line-height: 1.03;
@@ -146,7 +192,7 @@ h1 span {
   font-family: Georgia, "Times New Roman", serif;
   font-style: italic;
   font-weight: 400;
-  color: #707a6d;
+  color: var(--ink-soft);
   letter-spacing: -2.5px;
 }
 .intro-copy {
@@ -179,12 +225,35 @@ h1 span {
   justify-content: center;
   align-items: center;
   gap: 16px;
-  color: #fff;
-  background: var(--ink);
-  border: 1px solid var(--ink);
+  color: var(--on-accent);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   padding: 15px 23px;
   font-size: 12px;
   min-height: 48px;
+}
+.header-actions {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 11px;
+  min-height: 44px;
+  padding: 0 14px;
+}
+@media (max-width: 600px) {
+  .header-actions {
+    gap: 10px;
+  }
+  .theme-toggle {
+    font-size: 9px;
+    padding: 0 9px;
+  }
 }
 .cube-icon {
   font-size: 21px;
@@ -192,10 +261,10 @@ h1 span {
   line-height: 16px;
 }
 .primary-button:hover {
-  background: #414b44;
+  background: var(--accent-hover);
 }
 .outline-button {
-  border: 1px solid #cdd0c6;
+  border: 1px solid var(--line);
   background: transparent;
   border-radius: 3px;
   min-height: 44px;
@@ -260,8 +329,8 @@ h1 span {
   display: flex;
   position: relative;
   gap: 30px;
-  background: #e8e9df;
-  border: 1px solid #cdd1c3;
+  background: var(--accent-soft);
+  border: 1px solid var(--line);
   padding: 32px;
   margin-top: 16px;
   scroll-margin: 20px;
@@ -269,7 +338,7 @@ h1 span {
 .detail-index {
   font-family: Georgia, serif;
   font-size: 52px;
-  color: #738066;
+  color: var(--accent);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -315,13 +384,13 @@ h1 span {
 }
 .detail-body .dim-note {
   font-size: 12px;
-  border-top: 1px solid #cdd1c3;
+  border-top: 1px solid var(--line);
   margin-top: 16px;
   padding-top: 14px;
 }
 .detail-evidence {
   margin-top: 22px;
-  border-top: 1px solid #c5cbbb;
+  border-top: 1px solid var(--line);
   padding-top: 16px;
 }
 .detail-evidence summary {
@@ -345,7 +414,7 @@ h1 span {
   margin: 16px 0 0;
 }
 .detail-evidence li + li {
-  border-top: 1px solid #cdd1c3;
+  border-top: 1px solid var(--line);
   margin-top: 14px;
   padding-top: 14px;
 }

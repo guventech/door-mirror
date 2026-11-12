@@ -13,7 +13,7 @@
 - [x] Implement WebGL/load/context-loss fallbacks with retry and cleanup.
 - [x] Preserve vertical mobile scrolling and reduced-motion behavior.
 - [x] Pause drawing off screen and on hidden tabs.
-- [x] Pass fourteen behavior/geometry/asset tests, TypeScript, build and fourteen Chrome browser tests.
+- [x] Pass sixteen behavior/geometry/asset tests, TypeScript, build and fifteen Chrome browser tests.
 - [x] Pass automated accessibility scans on desktop and phone-width layouts with part details open.
 - [x] Inspect screenshots and retain third-party runtime licence notices.
 - [x] Document run commands, source ownership, asset regeneration and later embedding.
@@ -42,3 +42,15 @@
 ## User-authorized repository publication
 
 - [ ] Create public guventech/door-mirror, push the reviewed initial commit and leave the local checkout on main. GitHub app authentication is valid. The app connector has no repository-creation capability, while CLI network access is blocked by the session proxy. See the delivery message for the remaining publishing step if that restriction persists.
+
+## Follow-up: exploded bracket and site handoff
+
+- [x] Reproduce bracket/housing overlap with a failing geometry test.
+- [x] Author staged motion: separate optics, lift the bracket through the mouth, then move it sideways. Preserve return-to-rest behavior.
+- [x] Check bracket clearance at the final pose and throughout lateral extraction.
+- [x] Add explicit modelUrl and canvasLabel options to the framework-neutral renderer.
+- [x] Match the inspected site's dark/light teal palette and theme preference, with accessible controls.
+- [x] Write docs/INTEGRATE_BIRCANS.md with actual destination files, reusable pieces, migration rules, placement, locale plan, styles and acceptance checks.
+- [x] Leave the destination site repository untouched. Its existing untracked notes/tasks were not changed.
+
+The first publication was completed by the owner and independently verified at commit 0cc971e on public guventech/door-mirror, with main tracking origin/main. This follow-up is a local change set and has not been committed or pushed.

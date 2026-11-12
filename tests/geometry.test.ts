@@ -2,6 +2,86 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { createMirror } from "../scripts/model.mjs";
+import { positionAt } from "../src/parts.ts";
+
+test("the fully exploded bracket clears the housing envelope", () => {
+  const assembly = createMirror();
+  for (const group of assembly.children)
+    group.position.fromArray(
+      positionAt(
+        [0, 0, 0],
+        group.userData.explode,
+        1,
+        group.userData.explodePath,
+        group.userData.explodeFinish,
+      ),
+    );
+  assembly.updateMatrixWorld(true);
+  const bracket = new THREE.Box3().setFromObject(
+    assembly.getObjectByName("structuralCarrierBracket")!,
+  );
+  const housing = new THREE.Box3().setFromObject(
+    assembly.getObjectByName("housing")!,
+  );
+  assert.equal(
+    bracket.intersectsBox(housing),
+    false,
+    "the bracket must not cut through the housing in the exploded pose",
+  );
+});
+
+test("the bracket clears the open face before it moves sideways", () => {
+  const assembly = createMirror();
+  const base = assembly.getObjectByName("base")!;
+  const actuator = assembly.getObjectByName("actuator")!;
+  assert.deepEqual(
+    positionAt(
+      [0, 0, 0],
+      base.userData.explode,
+      0.3,
+      base.userData.explodePath,
+    ),
+    [0, 0, 0],
+  );
+  assert.equal(
+    positionAt(
+      [0, 0, 0],
+      actuator.userData.explode,
+      0.35,
+      undefined,
+      actuator.userData.explodeFinish,
+    )[2],
+    actuator.userData.explode[2],
+  );
+  for (let i = 0; i <= 40; i++) {
+    const t = i / 40;
+    base.position.fromArray(
+      positionAt(
+        [0, 0, 0],
+        base.userData.explode,
+        t,
+        base.userData.explodePath,
+      ),
+    );
+    assembly.updateMatrixWorld(true);
+    if (base.position.x < -0.001) {
+      const bracket = new THREE.Box3().setFromObject(
+        assembly.getObjectByName("structuralCarrierBracket")!,
+      );
+      const housing = new THREE.Box3().setFromObject(
+        assembly.getObjectByName("housing")!,
+      );
+      assert.ok(
+        bracket.min.z > housing.max.z,
+        "lateral extraction must stay in front of the housing",
+      );
+    }
+  }
+  assert.deepEqual(
+    positionAt([0, 0, 0], base.userData.explode, 0, base.userData.explodePath),
+    [0, 0, 0],
+  );
+});
 
 test("all representative geometry has finite positions and normals", () => {
   createMirror().traverse((object: THREE.Object3D) => {

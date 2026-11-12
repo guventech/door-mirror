@@ -1,5 +1,6 @@
 import { workbenchMarkup } from "./template.ts";
 import { evidence } from "./evidence.ts";
+import { initializeTheme } from "./theme.ts";
 import "./styles.css";
 import {
   parts,
@@ -14,6 +15,7 @@ import type { MirrorViewer } from "./viewer.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = workbenchMarkup;
+initializeTheme();
 
 function el<T extends HTMLElement = HTMLElement>(id: string) {
   return document.getElementById(id) as T;
@@ -163,10 +165,14 @@ async function loadViewer() {
   el("stage-status").textContent = "LOADING";
   try {
     const { createViewer } = await import("./viewer.ts");
-    viewer = await createViewer(el("canvas-host"), {
-      select: showDetails,
-      fail: failViewer,
-    });
+    viewer = await createViewer(
+      el("canvas-host"),
+      {
+        select: showDetails,
+        fail: failViewer,
+      },
+      { modelUrl: `${import.meta.env.BASE_URL}mirror/mirror.glb` },
+    );
     viewer.setLevel(level);
     viewer.explode(amount);
     viewer.select(selected);

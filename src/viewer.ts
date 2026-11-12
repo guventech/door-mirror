@@ -14,10 +14,12 @@ export interface MirrorViewer {
   dispose(): void;
 }
 type Callbacks = { select(id: PartId): void; fail(): void };
+export type ViewerOptions = { modelUrl?: string; canvasLabel?: string };
 
 export async function createViewer(
   host: HTMLElement,
   callbacks: Callbacks,
+  options: ViewerOptions = {},
 ): Promise<MirrorViewer> {
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -30,7 +32,8 @@ export async function createViewer(
   const canvas = renderer.domElement;
   canvas.setAttribute(
     "aria-label",
-    "Interactive door mirror. Use the parts list to select parts with a keyboard.",
+    options.canvasLabel ??
+      "Interactive door mirror. Use the parts list to select parts with a keyboard.",
   );
   canvas.setAttribute("role", "img");
   host.append(canvas);
@@ -178,7 +181,7 @@ export async function createViewer(
   }
   try {
     const gltf = await new GLTFLoader().loadAsync(
-      `${import.meta.env.BASE_URL}mirror/mirror.glb`,
+      options.modelUrl ?? "/mirror/mirror.glb",
     );
     if (disposed) {
       gltf.scene.traverse((o) => {
@@ -248,6 +251,8 @@ export async function createViewer(
             rest.get(id)!,
             group.userData.explode ?? [0, 0, 0],
             amount,
+            group.userData.explodePath,
+            group.userData.explodeFinish,
           ),
         );
       });
@@ -264,7 +269,7 @@ export async function createViewer(
             const material = m as THREE.MeshStandardMaterial;
             const selected =
               partId === id || (id === "autoDim" && partId === "glass");
-            material.emissive.set(selected ? 0xc46b37 : 0x000000);
+            material.emissive.set(selected ? 0x3b8898 : 0x000000);
             material.emissiveIntensity = selected ? 0.25 : 0;
           });
         });

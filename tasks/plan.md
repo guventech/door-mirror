@@ -25,12 +25,16 @@ Updated 12 November 2026. Local implementation is complete. The user changed the
 
 ## Verification
 
-The final automated suite passes fourteen behavior/geometry/asset tests and fourteen Chrome browser tests. TypeScript and the production build pass. Screenshots were visually inspected at desktop and phone widths. Detailed evidence and limitations are in tasks/verification.md.
+The final automated suite passes sixteen behavior/geometry/asset tests and fifteen Chrome browser tests. TypeScript and the production build pass. Screenshots were visually inspected at desktop and phone widths. Detailed evidence and limitations are in tasks/verification.md.
 
-Actual model budget: 1,602,840 bytes, 29,604 triangles, 68 render meshes within 14 selectable groups. The optional viewer is about 149 KB gzipped. The initial page does not request it.
+Actual model budget: 1,603,404 bytes, 29,604 triangles, 68 render meshes within 14 selectable groups. The optional viewer is about 149 KB gzipped. The initial page does not request it.
 
 ## Remaining checks
 
 Real-device mobile performance, Safari, and a fresh online dependency install remain unverified. Independent manufacturing research and source/copy review were completed. These are recorded explicitly, not treated as passed.
 
 Future site placement, translations, CV/contact destinations, deployment and a preview PR belong to the later integration phase. Publishing requires a separate user instruction.
+
+## Site handoff decision
+
+Recommend /guven#mirror immediately after HowIWork, which already contains the A3 tool card, and before SmeOffer. The neutral BrandLanding homepage remains unchanged. Detailed instructions and a ready-to-paste task prompt are in docs/INTEGRATE_BIRCANS.md. The current app also adopts the host palette/theme behavior and a framework-neutral model URL option. Actual host integration remains deferred as requested.

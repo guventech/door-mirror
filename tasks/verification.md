@@ -4,7 +4,7 @@
 
 ## Passed
 
-- npm test: fourteen behavior/geometry/asset tests, TypeScript and production build, fourteen browser tests.
+- npm test: sixteen behavior/geometry/asset tests, TypeScript and production build, fifteen browser tests.
 - npm ls --all --depth=1: exits successfully with runtime and development dependencies resolved. Missing optional preprocessors/devtools are unused.
 - First paint and scroll/specification/part exploration produce no viewer-chunk or GLB request and create no canvas.
 - Explicit activation loads the actual GLB from the same origin with no browser page/console errors in the normal flow.
@@ -22,7 +22,7 @@
 
 ## Asset measurements
 
-- GLB: 1,602,840 bytes.
+- GLB: 1,603,404 bytes.
 - Triangles: 29,604.
 - Selectable groups: 14, plus auto-dimming as the fifteenth logical entry.
 - Render meshes: 68.
@@ -50,3 +50,15 @@ Geometry remains an illustrative mesh. Physical producibility, constant wall thi
 The user explicitly authorized a public guventech/door-mirror repository, commit, push and return to main. The connected GitHub app authenticates as guventech, but its tools do not create repositories. CLI requests are rejected by the session's loopback proxy, and git add fails with Permission denied on .git/index.lock. Browser automation is unavailable. These are session restrictions, not a need for another browser login.
 
 A syntax-checked scripts/publish-github.ps1 is ready for the user's normal terminal. It stages and commits the reviewed project, creates main, creates the public repository, pushes and reports remote/local state. It does not disable security controls, change the proxy, force-push or publish an unrelated repository. At this verification point it has not been executed, and no push is claimed.
+
+## Follow-up: bracket motion and integration readiness
+
+The previous final base offset overlapped the housing envelope. The reproduced failing test now passes with staged motion. The optical stack reaches its separated pose first, then the base lifts in front of the open housing before moving sideways. Forty-one progress samples assert that any lateral bracket movement stays in front of the housing envelope. This is an explanatory motion, not a physical service-disassembly certification.
+
+The standalone preview now follows the inspected site's engineering-teal light/dark tokens and gb-theme preference. Dark/light accessibility and preference persistence have browser coverage. The renderer accepts explicit modelUrl and canvasLabel options and no longer contains import.meta.env. The Vite shell supplies its own base URL.
+
+The integration handoff was checked against the local guventech/site source: HomePage.tsx, HowIWork.tsx, locale routing/dictionaries, globals.css, theme components, fonts, existing CV/contact targets and next.config.ts CSP. Only reads were performed in that repository. Its pre-existing untracked files were left alone. No profile component has been integrated or deployed.
+
+The owner completed the original publication, verified at 0cc971e. New motion/theme/integration changes remain local until separately committed and pushed. Use the updated local source for the handoff or publish the update before copying it from GitHub.
+
+Final follow-up check: npm test passed all 16 unit/geometry/asset checks and all 15 Chrome browser checks. The front/rear drag screenshot assertion was intermittent during investigation. The final clean run passed after explicit canvas hover and frame synchronization, with debug instrumentation removed. Safari, real phone hardware and the destination integration remain unverified. Matching poster and housing images were refreshed from this run.
