@@ -1,0 +1,26 @@
+{
+  "name": "door-mirror",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node node_modules/vite/bin/vite.js --host 127.0.0.1",
+    "build": "node node_modules/typescript/bin/tsc --noEmit && node node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/vite/bin/vite.js preview --host 127.0.0.1",
+    "test": "npm run test:unit && npm run build && npm run test:e2e",
+    "test:unit": "node --experimental-strip-types --test tests/*.test.ts",
+    "assets": "node scripts/build-model.mjs",
+    "test:e2e": "node node_modules/@playwright/test/cli.js test"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "vite": "8.3.5",
+    "typescript": "6.0.3",
+    "@types/three": "0.186.0",
+    "@types/node": "24.13.3",
+    "@playwright/test": "1.62.1",
+    "@axe-core/playwright": "4.14.0"
+  }
+}

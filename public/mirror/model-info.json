@@ -1,0 +1,23 @@
+{
+  "groups": [
+    "housing",
+    "cap",
+    "glass",
+    "heater",
+    "actuator",
+    "base",
+    "gasket",
+    "harness",
+    "fasteners",
+    "foldMotor",
+    "turnSignal",
+    "puddleLamp",
+    "blindSpot",
+    "camera"
+  ],
+  "triangles": 29604,
+  "meshes": 68,
+  "bytes": 1602840,
+  "source": "scripts/model.mjs",
+  "original": true
+}
