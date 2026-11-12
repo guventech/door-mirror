@@ -1,5 +1,15 @@
 # Verification record
 
+## Recovery verification of the six showcase fixes
+
+On 12 November 2026, `npm test` passed 21 unit/geometry/asset checks, TypeScript, the production build and 17 Chrome browser checks. The final exported GLB has no module bounding-box intersections at 100% explosion in Low, Mid or High. Sampled motion checks prevent separated boxes from crossing back through each other. These checks do not certify physical service extraction.
+
+The optional local website fixture passed at 1440px and 390px. It captures three angles in every specification, checks Housing followed by Side camera, checks neutral evidence hosts and evidence summary clearance, and reports no page or console errors. Desktop and phone High screenshots and phone expanded evidence were inspected again during recovery. The fixture uses the patched React components and compiled website styles with a simulated fixed header. It is not the full Next.js application. It is ignored temporary data and its tests skip when it is absent.
+
+Current GLB size is 1,604,736 bytes with 29,604 triangles and 68 meshes. The poster was refreshed from the browser render of this asset. The optional viewer is 591.84 KB raw and 149.35 KB gzip. The normal build emits its existing bundle-size advisory.
+
+The prepared patch and application instructions are in handoff/. The destination website and homepage were not edited or deployed. Full website build, lint, real profile composition, Safari and physical phones remain unverified. Earlier verification entries below describe prior milestones.
+
 12 November 2026. Windows, Node.js 24.22.2. Browser suite uses the installed Chrome in headless mode against the production build.
 
 ## Passed

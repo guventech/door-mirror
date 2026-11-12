@@ -1,5 +1,13 @@
 # Standalone door mirror implementation
 
+## Recovered showcase fixes
+
+The interrupted session left the six requested fixes in the local source and `handoff/site-showcase.patch`. They have not been applied to the destination website or deployed. The homepage is untouched.
+
+Recovery verification passed 21 unit/geometry/asset tests, TypeScript, the production build and 17 Chrome browser tests. Two browser tests use an optional local React fixture at desktop and 390px. They do not verify the full Next.js profile page. The fixture is ignored temporary data, so those two tests skip when it is absent. Run the supplied handoff tests in the website project for final integration coverage.
+
+Current GLB: 1,604,736 bytes, 29,604 triangles and 68 meshes. Final exploded bounding boxes are separate in Low, Mid and High. Safari and physical phone coverage remain unavailable. See handoff/README.md for the remaining website step.
+
 Updated 12 November 2026. Local implementation is complete. The user changed the original site-integration scope to a new project in this directory. No existing site was edited or deployed.
 
 ## Architecture
@@ -38,3 +46,7 @@ Future site placement, translations, CV/contact destinations, deployment and a p
 ## Site handoff decision
 
 Recommend /guven#mirror immediately after HowIWork, which already contains the A3 tool card, and before SmeOffer. The neutral BrandLanding homepage remains unchanged. Detailed instructions and a ready-to-paste task prompt are in docs/INTEGRATE_BIRCANS.md. The current app also adopts the host palette/theme behavior and a framework-neutral model URL option. Actual host integration remains deferred as requested.
+
+## Showcase corrections
+
+Re-authored all module offsets and staged timing. Check all pairs at full explosion in Low, Mid and High, check exported geometry, and check that separated module envelopes never overlap again across 101 motion samples. Restrict public evidence to neutral sources. Add a native phone dialog and preserve inline scrolling. Prepare the React site patch inside the writable workspace, then verify desktop and 390px behavior in a local component test page. Applying the patch and checking the real Next.js site require a session in the website project.

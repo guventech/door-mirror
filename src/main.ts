@@ -30,6 +30,44 @@ let loading = false,
 let lastFocused: HTMLElement | null = null;
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const slider = el<HTMLInputElement>("explode");
+const mobileDialog = document.createElement("dialog");
+mobileDialog.className = "mobile-viewer";
+mobileDialog.setAttribute("aria-label", "Door mirror viewer");
+document.body.append(mobileDialog);
+const workbench = el("workbench");
+const homeMarker = document.createComment("workbench position");
+workbench.before(homeMarker);
+const closeMobile = document.createElement("button");
+closeMobile.className = "mobile-close";
+closeMobile.textContent = "Close viewer ×";
+closeMobile.addEventListener("click", () => mobileDialog.close());
+const openMobile = document.createElement("button");
+openMobile.className = "outline-button mobile-open";
+openMobile.textContent = "Open full screen";
+openMobile.hidden = true;
+homeMarker.before(openMobile);
+let previousOverflow = "";
+let pageScroll = 0;
+function enterMobile() {
+  if (!matchMedia("(max-width: 767px)").matches || mobileDialog.open) return;
+  previousOverflow = document.body.style.overflow;
+  pageScroll = window.scrollY;
+  mobileDialog.append(closeMobile, workbench);
+  mobileDialog.showModal();
+  document.body.style.overflow = "hidden";
+  closeMobile.focus({ preventScroll: true });
+  viewer?.setFullscreen(true);
+}
+mobileDialog.addEventListener("close", () => {
+  stopAnimation();
+  viewer?.setFullscreen(false);
+  homeMarker.after(workbench);
+  document.body.style.overflow = previousOverflow;
+  window.scrollTo({ top: pageScroll, behavior: "instant" });
+  openMobile.hidden = false;
+  openMobile.focus({ preventScroll: true });
+});
+openMobile.addEventListener("click", enterMobile);
 
 function showDetails(id: PartId, focus = true) {
   if (focus) lastFocused = document.activeElement as HTMLElement;
@@ -67,9 +105,9 @@ function showDetails(id: PartId, focus = true) {
       <details class="detail-evidence">
         <summary>Evidence and limits</summary>
         <p>
-          These sources describe the technique. Reuse is a design proposal, not
-          a measured saving. A published design does not prove that this model
-          can be made.
+          Cost ideas need engineering checks. They are not measured savings.
+          References, where listed, describe techniques. They do not prove that
+          this model can be made.
         </p>
         <ul>
           ${references.map((reference) => `<li><a href="${reference.url}" target="_blank" rel="noopener noreferrer">${reference.title} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></a><span class="evidence-kind">${reference.kind}</span><p>${reference.supports}</p></li>`).join("")}
@@ -78,6 +116,11 @@ function showDetails(id: PartId, focus = true) {
     </div>
     <button class="close-detail" aria-label="Close part details">×</button>`;
   card.hidden = false;
+  card.querySelector("details")!.addEventListener("toggle", (event) => {
+    const details = event.currentTarget as HTMLDetailsElement;
+    if (details.open)
+      details.scrollIntoView({ block: "start", behavior: "instant" });
+  });
   card.querySelector("button")!.addEventListener("click", () => closeDetails());
   viewer?.select(id);
   updateRows();
@@ -158,6 +201,7 @@ function animate() {
 }
 async function loadViewer() {
   if (loading || viewer) return;
+  enterMobile();
   loading = true;
   const button = el<HTMLButtonElement>("load-viewer");
   button.disabled = true;
@@ -174,6 +218,7 @@ async function loadViewer() {
       { modelUrl: `${import.meta.env.BASE_URL}mirror/mirror.glb` },
     );
     viewer.setLevel(level);
+    viewer.setFullscreen(mobileDialog.open);
     viewer.explode(amount);
     viewer.select(selected);
     el("load-panel").hidden = true;

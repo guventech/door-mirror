@@ -14,7 +14,7 @@ export const parts = [
     idea: "Use colour in the plastic to avoid a separate paint step when the finish and outdoor durability allow it.",
     check:
       "Wall thickness, tool release and outdoor durability still need engineering checks.",
-    sources: ["moulding", "colour"],
+    sources: [],
   },
   {
     id: "cap",
@@ -27,7 +27,7 @@ export const parts = [
     idea: "Use releasable clips where they can hold the cover securely. This may remove cover screws and keep repair access.",
     check:
       "Check clip strength, repeated removal and how the mould opens around each hook.",
-    sources: ["snaps", "colour"],
+    sources: [],
   },
   {
     id: "glass",
@@ -53,7 +53,7 @@ export const parts = [
     idea: "Reuse a heater only when its shape, heat coverage and electrical power match.",
     check:
       "Check glass temperature, electrical resistance and the adhesive. The visible circuit is enlarged for clarity.",
-    sources: ["heater", "carrier"],
+    sources: ["carrier"],
   },
   {
     id: "actuator",
@@ -66,7 +66,7 @@ export const parts = [
     idea: "Reuse the same adjuster when its tilt range, load capacity and mounting points suit the mirror.",
     check:
       "Check movement clearance, vibration and motor load. The internal gears are not modelled.",
-    sources: ["adjuster", "carrier"],
+    sources: ["carrier"],
   },
   {
     id: "base",
@@ -79,7 +79,7 @@ export const parts = [
     idea: "Consider reinforced plastic instead of metal only after strength and vibration checks. Metal inserts may still be needed.",
     check:
       "Check long-term strength, temperature, moisture and vibration. No structural test has been done on this model.",
-    sources: ["bracket", "moulding"],
+    sources: [],
   },
   {
     id: "gasket",
@@ -92,7 +92,7 @@ export const parts = [
     idea: "Use a simple seal shape with even pressure around it. Keep the fasteners needed to clamp the base to the door.",
     check:
       "The seal is shown uncompressed. Its material, squeeze and water tightness still need testing.",
-    sources: ["seal"],
+    sources: [],
   },
   {
     id: "harness",
@@ -105,7 +105,7 @@ export const parts = [
     idea: "Use one connector family. Omit wires for absent options and plug unused sealed connector positions.",
     check:
       "Check wire ratings, water sealing and movement. The model does not specify a complete electrical circuit or camera data link.",
-    sources: ["connector", "adjuster"],
+    sources: [],
   },
   {
     id: "fasteners",
@@ -118,7 +118,7 @@ export const parts = [
     idea: "Use fewer screw types where possible. Keep screws at loaded joints and make repair points reachable.",
     check:
       "Check tightening load, pull-out strength and access for tools. A clip must suit its own load and repair needs.",
-    sources: ["service", "snaps"],
+    sources: ["service"],
   },
   {
     id: "foldMotor",
@@ -131,7 +131,7 @@ export const parts = [
     idea: "Make the drive a removable module with reachable screws and a plug. This can avoid replacing the whole mirror when the drive fails.",
     check:
       "Check holding force, manual release and repair access. The gears and release mechanism are simplified.",
-    sources: ["fold", "adjuster"],
+    sources: ["fold"],
   },
   {
     id: "turnSignal",
@@ -156,7 +156,7 @@ export const parts = [
       "This small lamp lights the ground below the door. Its lens faces down through an opening in the shell.",
     idea: "Use one mounting pocket for a lamp or a sealed cover. Check that the cover keeps water out.",
     check: "Check ground coverage, drainage and both versions of the seal.",
-    sources: ["puddle", "seal"],
+    sources: ["puddle"],
   },
   {
     id: "blindSpot",
@@ -169,7 +169,7 @@ export const parts = [
     idea: "Reserve space and wiring for an optional warning light. It still needs a separate vehicle detection system.",
     check:
       "Check the viewing angle, brightness and electrical interface. This version uses a small window in the housing.",
-    sources: ["detection"],
+    sources: [],
   },
   {
     id: "camera",
@@ -182,7 +182,7 @@ export const parts = [
     idea: "Reuse the camera pocket only when the view, seal and aiming accuracy suit the system.",
     check:
       "The vehicle may need camera alignment after replacement. Optics, sealing and calibration are not validated here.",
-    sources: ["camera", "cameraSeal", "cameraSetup"],
+    sources: ["cameraSeal"],
   },
   {
     id: "autoDim",

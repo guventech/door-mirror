@@ -71,7 +71,9 @@ test("every insight separates function, cost proposal, checks and linked evidenc
       ).toBeVisible();
     await detail.getByText("Evidence and limits", { exact: true }).click();
     const links = detail.locator(".detail-evidence a");
-    expect(await links.count()).toBeGreaterThan(0);
+    await expect(
+      detail.getByText(/Cost ideas need engineering checks/),
+    ).toBeVisible();
     for (const link of await links.all()) {
       await expect(link).toHaveAttribute("href", /^https:\/\//);
       await expect(link).toHaveAttribute("rel", "noopener noreferrer");
@@ -361,7 +363,7 @@ test("phone layout stays within the viewport before and after loading", async ({
     await page
       .locator("canvas")
       .evaluate((canvas) => getComputedStyle(canvas).touchAction),
-  ).toBe("pan-y pinch-zoom");
+  ).toBe("none");
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -373,6 +375,26 @@ test("phone layout stays within the viewport before and after loading", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  await expect(
+    page.getByRole("dialog", { name: "Door mirror viewer" }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Close viewer ×", exact: true })
+    .click();
+  await expect(
+    page.getByRole("dialog", { name: "Door mirror viewer" }),
+  ).not.toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Open full screen", exact: true }),
+  ).toBeFocused();
+  await expect(page.locator("body")).not.toHaveCSS("overflow", "hidden");
+  await page
+    .getByRole("button", { name: "Open full screen", exact: true })
+    .click();
+  await page.keyboard.press("Escape");
+  await expect(
+    page.getByRole("dialog", { name: "Door mirror viewer" }),
+  ).not.toBeVisible();
 });
 
 test("the renderer does no drawing while the workbench is off screen", async ({

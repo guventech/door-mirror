@@ -1,0 +1,677 @@
+--- a/src/components/mirror/MirrorTeardown.tsx
++++ b/src/components/mirror/MirrorTeardown.tsx
+@@ -15,6 +15,36 @@
+   const [selected, setSelected] = useState<PartId | null>(null);
+   const [amount, setAmount] = useState(0);
+   const [status, setStatus] = useState<"static" | "loading" | "live" | "failed">("static");
++  const [fullscreen, setFullscreen] = useState(false);
++  const dialog = useRef<HTMLDialogElement>(null);
++  const openButton = useRef<HTMLButtonElement>(null);
++  const closeButton = useRef<HTMLButtonElement>(null);
++  const pageScroll = useRef(0);
++  function openFullscreen() {
++    if (!window.matchMedia("(max-width: 767px)").matches || !dialog.current || dialog.current.matches(":modal")) return;
++    pageScroll.current = window.scrollY;
++    dialog.current.removeAttribute("open");
++    dialog.current.showModal();
++    setFullscreen(true);
++    viewer.current?.setFullscreen(true);
++    requestAnimationFrame(() => closeButton.current?.focus({ preventScroll: true }));
++  }
++  function leaveFullscreen() {
++    stop();
++    setFullscreen(false);
++    viewer.current?.setFullscreen(false);
++    dialog.current?.show();
++    requestAnimationFrame(() => {
++      window.scrollTo({ top: pageScroll.current, behavior: "instant" });
++      openButton.current?.focus({ preventScroll: true });
++    });
++  }
++  useEffect(() => {
++    if (!fullscreen) return;
++    const previous = document.body.style.overflow;
++    document.body.style.overflow = "hidden";
++    return () => { document.body.style.overflow = previous; };
++  }, [fullscreen]);
+   const [animating, setAnimating] = useState(false);
+   const viewer = useRef<MirrorViewer | null>(null);
+   const host = useRef<HTMLDivElement>(null);
+@@ -75,6 +105,7 @@
+   }
+   async function activate() {
+     if (loading.current || viewer.current || !host.current) return;
++    openFullscreen();
+     loading.current = true;
+     setStatus("loading");
+     try {
+@@ -87,6 +118,7 @@
+       if (!mounted.current) { instance.dispose(); return; }
+       viewer.current = instance;
+       instance.setLevel(latest.current.level);
++      instance.setFullscreen(dialog.current?.matches(":modal") ?? false);
+       instance.explode(latest.current.amount);
+       instance.select(latest.current.selected);
+       setStatus("live");
+@@ -139,7 +171,13 @@
+         <h2 className="heading-section text-ink">{ui.heading}</h2>
+         <p className="body-copy mt-5 max-w-3xl text-ink-soft">{ui.intro}</p>
+         <p className="meta-copy mt-3 text-muted">{ui.limits}</p>
+-        <div className="surface-card mt-8">
++        <button ref={openButton} className={`${styles.button} ${styles.mobileOpen} mt-6`} onClick={openFullscreen}>{ui.fullscreenOpen}</button>
++        <dialog open ref={dialog} aria-label={ui.heading} className={`surface-card mt-8 ${styles.workbench}`} onClose={leaveFullscreen}>
++          <div data-viewer-header hidden={!fullscreen} className={styles.fullscreenBar}>
++            <span>{ui.heading}</span>
++            <button ref={closeButton} className={styles.button} onClick={() => dialog.current?.close()}>{ui.fullscreenClose} ×</button>
++          </div>
++          {fullscreen && <p className="meta-copy py-3 text-muted">{ui.fullscreenHint}</p>}
+           <div className="flex flex-wrap items-center justify-between gap-4">
+             <div role="group" aria-label={ui.specification} className="flex flex-wrap gap-2">
+               {levels.map((value) => <button key={value} disabled={!ready} className={styles.button} aria-pressed={level === value} onClick={() => chooseLevel(value)}>{ui.levels[value]}</button>)}
+@@ -176,7 +214,7 @@
+               {part ? <MirrorInsight ui={ui} part={part} dim={dim} references={references} titleRef={detailTitle} onClose={close} /> : <p className="body-copy text-ink-soft">{ui.empty}</p>}
+             </div>
+           </div>
+-        </div>
++        </dialog>
+         <div className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
+           <a href={cvHref} className="focus-ring btn-text inline-flex min-h-11 items-center">{ui.cv} <span aria-hidden="true" className="ml-2">↓</span></a>
+           <a href="#contact" className="focus-ring btn-text inline-flex min-h-11 items-center">{ui.contact} <span aria-hidden="true" className="ml-2">→</span></a>
+--- a/src/components/mirror/MirrorInsight.tsx
++++ b/src/components/mirror/MirrorInsight.tsx
+@@ -6,7 +6,7 @@
+   ui: MirrorCopy["ui"]; part: MirrorPart; dim?: MirrorPart; references: MirrorCopy["evidence"][keyof MirrorCopy["evidence"]][];
+   titleRef: Ref<HTMLHeadingElement>; onClose(): void;
+ }) {
+-  return <article className="rounded-card border border-line bg-accent-soft p-5" aria-labelledby="mirror-detail-title">
++  return <article className={`${styles.insight} rounded-card border border-line bg-accent-soft p-5`} aria-labelledby="mirror-detail-title">
+     <div className="flex flex-wrap items-center justify-between gap-3">
+       <p className="meta-copy text-muted">{part.category} · {ui.badges[part.level]}</p>
+       <button className={styles.button} onClick={onClose} aria-label={ui.closeLabel}>{ui.close} ×</button>
+@@ -17,7 +17,16 @@
+     <h5 className="mt-5 font-semibold text-ink">{ui.idea}</h5><p className="mt-2 text-ink-soft">{part.idea}</p>
+     {dim && <p className="mt-4 text-ink-soft"><strong>{ui.dimming}</strong> {dim.description} {dim.idea}</p>}
+     <h5 className="mt-5 font-semibold text-ink">{ui.check}</h5><p className="mt-2 text-ink-soft">{part.check} {dim?.check}</p>
+-    <details key={part.id} className="mt-5 border-t border-line pt-4">
++    <details key={part.id} className={`${styles.evidence} mt-5 border-t border-line pt-4`} onToggle={(event) => {
++      const details = event.currentTarget;
++      if (!details.open) return;
++      const modal = details.closest("dialog:modal");
++      const headerBottom = modal
++        ? modal.querySelector<HTMLElement>("[data-viewer-header]")?.getBoundingClientRect().bottom ?? 64
++        : document.querySelector("header")?.getBoundingClientRect().bottom ?? 0;
++      details.style.scrollMarginTop = `${Math.max(0, headerBottom) + 16}px`;
++      details.scrollIntoView({ block: "start", behavior: "instant" });
++    }}>
+       <summary className="focus-ring cursor-pointer font-medium text-ink">{ui.evidence}</summary>
+       <p className="meta-copy mt-3 text-ink-soft">{ui.evidenceLimits}</p>
+       <ul className="mt-4 space-y-4">{references.map((reference) => <li key={reference.url}>
+--- a/src/components/mirror/mirror.module.css
++++ b/src/components/mirror/mirror.module.css
+@@ -25,5 +25,18 @@
+ .slider { display: grid; gap: .5rem; flex: 1 1 12rem; font-size: .875rem; min-width: 0; }
+ .slider input { width: 100%; accent-color: var(--color-accent); min-height: 2.75rem; }
+ .part { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; width: 100%; text-align: left; padding: .75rem .5rem; border-bottom: 1px solid var(--color-line); color: var(--color-ink); cursor: pointer; }
+-.part:hover, .part[aria-pressed="true"] { background: var(--color-accent-soft); }
++.part[aria-pressed="true"] { background: var(--color-accent-soft); }
+ .part[aria-pressed="true"] { box-shadow: inset 3px 0 var(--color-accent); }
++
++@media (hover: hover) { .part:hover { text-decoration: underline; text-underline-offset: .2em; } }
++.part:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
++.insight, .evidence { scroll-margin-top: 7rem; }
++
++.workbench { position: relative; inset: auto; width: 100%; max-width: none; max-height: none; margin-inline: 0; color: inherit; overflow: visible; }
++.workbench:not(:modal) { display: block; }
++.workbench:modal { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 4.5rem 1rem 2rem; border-radius: 0; overflow-y: auto; overscroll-behavior: contain; }
++.workbench::backdrop { background: var(--color-paper); }
++.fullscreenBar { position: fixed; top: 0; left: 1rem; right: 1rem; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: .75rem; min-height: 4rem; padding-block: max(.5rem, env(safe-area-inset-top)) .5rem; background: var(--color-paper); }
++.fullscreenBar[hidden] { display: none; }
++.workbench:modal .stage { height: 46dvh; min-height: 16rem; }
++@media (min-width: 768px) { .mobileOpen { display: none; } }
+--- a/src/components/mirror/viewer.ts
++++ b/src/components/mirror/viewer.ts
+@@ -11,6 +11,7 @@
+   select(id: PartId | null): void;
+   reset(): void;
+   zoom(factor: number): void;
++  setFullscreen(active: boolean): void;
+   dispose(): void;
+ }
+ type Callbacks = { select(id: PartId): void; fail(): void };
+@@ -46,6 +47,8 @@
+   controls.target.copy(target);
+   controls.enablePan = false;
+   controls.enableZoom = false;
++  controls.minDistance = 6;
++  controls.maxDistance = 17;
+   controls.enableDamping = false;
+   controls.minPolarAngle = Math.PI * 0.15;
+   controls.maxPolarAngle = Math.PI * 0.85;
+@@ -226,6 +229,10 @@
+   }
+ 
+   return {
++    setFullscreen(active) {
++      controls.enableZoom = active;
++      canvas.style.touchAction = active ? "none" : "pan-y pinch-zoom";
++    },
+     setLevel(level) {
+       const enabled = new Set(activeParts(level).map((p) => p.id));
+       groups.forEach((group, id) => {
+@@ -244,7 +251,7 @@
+       invalidate();
+     },
+     explode(amount) {
+-      model!.scale.setScalar(1.55 - amount * 0.35);
++      model!.scale.setScalar(1.55 - amount * 0.7);
+       groups.forEach((group, id) => {
+         group.position.fromArray(
+           positionAt(
+--- a/src/components/mirror/mirror.test.ts
++++ b/src/components/mirror/mirror.test.ts
+@@ -29,7 +29,8 @@
+       }));
+       for (const text of [part.description, part.idea, part.check]) expect(detail).toContain(text.replaceAll("'", "&#x27;"));
+       for (const id of part.sources) expect(detail).toContain(evidence[id].url.replaceAll("&", "&amp;"));
+-      expect(detail).toContain('rel="noopener noreferrer"');
++      if (part.sources.length) expect(detail).toContain('rel="noopener noreferrer"');
++      expect(detail).toContain(mirrorEn.ui.evidenceLimits);
+     }
+   });
+   it("retains specification requirements and High glass construction limits", () => {
+@@ -90,4 +91,32 @@
+     expect(positionAt([0, 0, 0], explode, 1, explodePath)).toEqual(explode);
+     expect(positionAt([0, 0, 0], explode, 0, explodePath)).toEqual([0, 0, 0]);
+   });
++  it("only publishes neutral evidence and simple punctuation", () => {
++    for (const reference of Object.values(evidence)) {
++      expect(["patents.google.com", "www.nhtsa.gov"]).toContain(new URL(reference.url).hostname);
++    }
++    for (const text of Object.values(mirrorEn.ui)) {
++      if (typeof text === "string") expect(text).not.toMatch(/[;\u2014]/);
++    }
++    for (const part of parts) {
++      for (const field of ["name", "description", "idea", "check"] as const) expect(part[field]).not.toMatch(/[;\u2014]/);
++    }
++  });
++  for (const level of ["Low", "Mid", "High"] as const) {
++    it(`${level}: every exploded module clears all other modules`, async () => {
++      const bytes = readFileSync("public/guven/mirror/mirror.glb");
++      const { scene } = await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength), "");
++      const root = scene.getObjectByName("genericDoorMirror")!;
++      const enabled = new Set<string>(activeParts(level).map((part) => part.id));
++      const groups = root.children.filter((group) => enabled.has(group.name));
++      for (const group of groups) group.position.fromArray(positionAt([0, 0, 0], group.userData.explode, 1, group.userData.explodePath));
++      scene.updateMatrixWorld(true);
++      for (let i = 0; i < groups.length; i++) {
++        for (let j = i + 1; j < groups.length; j++) {
++          expect(new Box3().setFromObject(groups[i]).intersectsBox(new Box3().setFromObject(groups[j])), `${groups[i].name} and ${groups[j].name}`).toBe(false);
++        }
++      }
++    });
++  }
++
+ });
+--- a/src/lib/i18n/mirror-en.ts
++++ b/src/lib/i18n/mirror-en.ts
+@@ -10,7 +10,7 @@
+     idea: "Use colour in the plastic to avoid a separate paint step when the finish and outdoor durability allow it.",
+     check:
+       "Wall thickness, tool release and outdoor durability still need engineering checks.",
+-    sources: ["moulding", "colour"],
++    sources: [],
+   },
+   {
+     id: "cap",
+@@ -23,7 +23,7 @@
+     idea: "Use releasable clips where they can hold the cover securely. This may remove cover screws and keep repair access.",
+     check:
+       "Check clip strength, repeated removal and how the mould opens around each hook.",
+-    sources: ["snaps", "colour"],
++    sources: [],
+   },
+   {
+     id: "glass",
+@@ -49,7 +49,7 @@
+     idea: "Reuse a heater only when its shape, heat coverage and electrical power match.",
+     check:
+       "Check glass temperature, electrical resistance and the adhesive. The visible circuit is enlarged for clarity.",
+-    sources: ["heater", "carrier"],
++    sources: ["carrier"],
+   },
+   {
+     id: "actuator",
+@@ -62,7 +62,7 @@
+     idea: "Reuse the same adjuster when its tilt range, load capacity and mounting points suit the mirror.",
+     check:
+       "Check movement clearance, vibration and motor load. The internal gears are not modelled.",
+-    sources: ["adjuster", "carrier"],
++    sources: ["carrier"],
+   },
+   {
+     id: "base",
+@@ -75,7 +75,7 @@
+     idea: "Consider reinforced plastic instead of metal only after strength and vibration checks. Metal inserts may still be needed.",
+     check:
+       "Check long-term strength, temperature, moisture and vibration. No structural test has been done on this model.",
+-    sources: ["bracket", "moulding"],
++    sources: [],
+   },
+   {
+     id: "gasket",
+@@ -88,7 +88,7 @@
+     idea: "Use a simple seal shape with even pressure around it. Keep the fasteners needed to clamp the base to the door.",
+     check:
+       "The seal is shown uncompressed. Its material, squeeze and water tightness still need testing.",
+-    sources: ["seal"],
++    sources: [],
+   },
+   {
+     id: "harness",
+@@ -101,7 +101,7 @@
+     idea: "Use one connector family. Omit wires for absent options and plug unused sealed connector positions.",
+     check:
+       "Check wire ratings, water sealing and movement. The model does not specify a complete electrical circuit or camera data link.",
+-    sources: ["connector", "adjuster"],
++    sources: [],
+   },
+   {
+     id: "fasteners",
+@@ -114,7 +114,7 @@
+     idea: "Use fewer screw types where possible. Keep screws at loaded joints and make repair points reachable.",
+     check:
+       "Check tightening load, pull-out strength and access for tools. A clip must suit its own load and repair needs.",
+-    sources: ["service", "snaps"],
++    sources: ["service"],
+   },
+   {
+     id: "foldMotor",
+@@ -127,7 +127,7 @@
+     idea: "Make the drive a removable module with reachable screws and a plug. This can avoid replacing the whole mirror when the drive fails.",
+     check:
+       "Check holding force, manual release and repair access. The gears and release mechanism are simplified.",
+-    sources: ["fold", "adjuster"],
++    sources: ["fold"],
+   },
+   {
+     id: "turnSignal",
+@@ -152,7 +152,7 @@
+       "This small lamp lights the ground below the door. Its lens faces down through an opening in the shell.",
+     idea: "Use one mounting pocket for a lamp or a sealed cover. Check that the cover keeps water out.",
+     check: "Check ground coverage, drainage and both versions of the seal.",
+-    sources: ["puddle", "seal"],
++    sources: ["puddle"],
+   },
+   {
+     id: "blindSpot",
+@@ -165,7 +165,7 @@
+     idea: "Reserve space and wiring for an optional warning light. It still needs a separate vehicle detection system.",
+     check:
+       "Check the viewing angle, brightness and electrical interface. This version uses a small window in the housing.",
+-    sources: ["detection"],
++    sources: [],
+   },
+   {
+     id: "camera",
+@@ -178,7 +178,7 @@
+     idea: "Reuse the camera pocket only when the view, seal and aiming accuracy suit the system.",
+     check:
+       "The vehicle may need camera alignment after replacement. Optics, sealing and calibration are not validated here.",
+-    sources: ["camera", "cameraSeal", "cameraSetup"],
++    sources: ["cameraSeal"],
+   },
+   {
+     id: "autoDim",
+@@ -198,24 +198,6 @@
+ 
+ // Public references support the technique, not this model's production readiness.
+ export const evidence = {
+-  moulding: {
+-    title: "Plastic part design guide",
+-    kind: "Manufacturing guidance",
+-    url: "https://www.protolabs.com/resources/guides-and-trend-reports/injection-molding-guide-process-design-tips-materials/",
+-    supports: "Explains wall thickness, ribs, screw posts and mould release.",
+-  },
+-  colour: {
+-    title: "Weatherable mirror plastics",
+-    kind: "Material application",
+-    url: "https://www.ineos.com/businesses/ineos-styrolution/industries/automotive/exterior/",
+-    supports: "Describes unpainted, weather-resistant mirror components.",
+-  },
+-  snaps: {
+-    title: "Moulded clip design guide",
+-    kind: "Manufacturing guidance",
+-    url: "https://www.protolabs.com/resources/design-tips/5-ways-to-master-complex-features-in-injection-molded-parts/",
+-    supports: "Explains snap features and the tooling needed to release them.",
+-  },
+   carrier: {
+     title: "Published mirror assembly",
+     kind: "Published design",
+@@ -230,39 +212,7 @@
+     supports:
+       "Shows why the required view and glass curvature must be checked. This historical procedure is not a current compliance assessment.",
+   },
+-  heater: {
+-    title: "Mirror heater construction",
+-    kind: "Current product offering",
+-    url: "https://www.backerhti.com/industry-sectors/automotive",
+-    supports:
+-      "Describes thin foil mirror heaters and glass temperature limits.",
+-  },
+-  adjuster: {
+-    title: "Mirror drive modules",
+-    kind: "Current product offering",
+-    url: "https://www.motioncontrols.com/products",
+-    supports: "Shows separate glass-adjustment and power-fold drive families.",
+-  },
+-  bracket: {
+-    title: "Reinforced plastic mirror brackets",
+-    kind: "Material application",
+-    url: "https://plastics-rubber.basf.com/southamerica/en/performance_polymers/industries/pp_automotive/applications/application_exterior",
+-    supports:
+-      "Describes reinforced plastic in mirror brackets and bases as a metal-replacement approach.",
+-  },
+-  seal: {
+-    title: "Gasket compression guidance",
+-    kind: "Manufacturing guidance",
+-    url: "https://discover.parker.com/edge-bonded-integral-seal-technology",
+-    supports: "Explains controlled compression at a sealing joint.",
+-  },
+-  connector: {
+-    title: "Unused connector cavity plugs",
+-    kind: "Current product offering",
+-    url: "https://www.te.com/en/product-CAT-J58-NCP.html",
+-    supports:
+-      "Shows sealing plugs for unused positions in compatible connectors.",
+-  },
++
+   service: {
+     title: "Serviceable mirror modules",
+     kind: "Published design",
+@@ -289,32 +239,14 @@
+     supports:
+       "Describes protected exterior lighting directed toward the ground.",
+   },
+-  detection: {
+-    title: "Blind-spot warning system",
+-    kind: "Current system description",
+-    url: "https://www.bosch-mobility.com/en/solutions/assistance-systems/blind-spot-detection/",
+-    supports:
+-      "Separates vehicle detection sensors from the warning light in the mirror.",
+-  },
+-  camera: {
+-    title: "Wide-angle vehicle cameras",
+-    kind: "Current product offering",
+-    url: "https://www.bosch-mobility.com/en/solutions/camera/near-range-camera/",
+-    supports: "Describes the viewing field of near-range vehicle cameras.",
+-  },
++
+   cameraSeal: {
+     title: "Sealed vehicle camera construction",
+     kind: "Published design",
+     url: "https://patents.google.com/patent/US8792003B2/en",
+     supports: "Describes the lens barrel, enclosure and watertight interfaces.",
+   },
+-  cameraSetup: {
+-    title: "Surround-view camera setup",
+-    kind: "System product information",
+-    url: "https://continental-automotive.scene7.com/is/content/ContiAutomotiveProd/Continental-ProViu-2ndGen_-Productinformationpdf?cdh=attachment",
+-    supports:
+-      "Describes calibration in a multi-camera vehicle system. This does not specify the setup process for this illustrative mirror.",
+-  },
++
+   dimming: {
+     title: "Electrically dimming mirror layers",
+     kind: "Published design",
+@@ -328,18 +260,19 @@
+ export const ui = {
+   heading: "Cost teardown: door mirror",
+   intro: "A generic mirror assembly. Explore its parts and the design choices I would check for lower cost and easier repair.",
+-  limits: "Illustrative engineering study. No measured savings or production validation. The exploded view explains the assembly; it is not a validated service sequence.",
++  limits: "Illustrative engineering study. No measured savings or production validation. The exploded view explains the assembly. It is not a validated service sequence.",
+   specification: "Mirror specification",
+   levels: { Low: "Low", Mid: "Mid", High: "High" },
+   badges: { Low: "Standard", Mid: "Mid option", High: "High option" },
+   partCount: "part insights", live: "Live 3D", static: "Static preview",
+   posterAlt: "Assembled generic door mirror with its glass, shell and mounting base",
+-  canvasLabel: "Interactive door mirror. Drag to rotate; use the parts list for keyboard selection.",
++  canvasLabel: "Interactive door mirror. Drag to rotate. Use the parts list for keyboard selection.",
+   loading: "Preparing the 3D viewer.",
+   failed: "The 3D viewer could not load. You can still explore every part below.",
+   liveHint: "Drag to rotate. Select a part to explore. Scroll vertically to continue reading.",
+   staticHint: "Explore the parts below, or load the interactive model.",
+   retry: "Try again", load: "Load 3D viewer", controls: "3D viewer controls",
++    fullscreenOpen: "Open full screen", fullscreenClose: "Close viewer", fullscreenHint: "Drag to rotate. Pinch to zoom. Scroll below for parts.",
+   explode: "Explode", explodeLabel: "Explode assembly", stop: "Stop animation",
+   reverse: "Reverse animation", animate: "Animate explode", reset: "Reset view",
+   zoomIn: "Zoom in", zoomOut: "Zoom out", zoom: "Zoom",
+@@ -349,7 +282,7 @@
+   close: "Close", closeLabel: "Close part details", construction: "Construction",
+   function: "What it does", idea: "A cost idea", dimming: "High option: auto-dimming.",
+   check: "Still to check", evidence: "Evidence and limits",
+-  evidenceLimits: "These sources describe the technique. Reuse is a design proposal, not a measured saving. A published design does not prove that this model can be made.",
++  evidenceLimits: "Cost ideas need engineering checks. They are not measured savings. References, where listed, describe techniques. They do not prove that this model can be made.",
+   newTab: "opens in a new tab",
+ };
+ 
+--- a/src/lib/i18n/mirror-tr.ts
++++ b/src/lib/i18n/mirror-tr.ts
+@@ -107,6 +107,7 @@
+     liveHint: "Döndürmek için sürükleyin. İncelemek için bir parça seçin. Okumaya devam etmek için dikey kaydırın.",
+     staticHint: "Aşağıdaki parçaları inceleyin veya etkileşimli modeli yükleyin.",
+     retry: "Yeniden dene", load: "3B görüntüleyiciyi yükle", controls: "3B görüntüleyici kontrolleri",
++    fullscreenOpen: "Tam ekran aç", fullscreenClose: "Görüntüleyiciyi kapat", fullscreenHint: "Döndürmek için sürükleyin. Yakınlaştırmak için iki parmağınızı kullanın. Parçalar için aşağı kaydırın.",
+     explode: "Parçaları ayır", explodeLabel: "Parçaları ayırma miktarı", stop: "Animasyonu durdur", reverse: "Animasyonu tersine çevir",
+     animate: "Ayırmayı oynat", reset: "Görünümü sıfırla", zoomIn: "Yakınlaştır", zoomOut: "Uzaklaştır", zoom: "Yakınlık",
+     explore: "Parçaları inceleyin", optionsHint: "İsteğe bağlı bir parça seçildiğinde gereken donanım seviyesine geçilir.",
+@@ -119,24 +120,13 @@
+   },
+   parts: parts.map((part) => ({ ...part, ...partCopy[part.id] })),
+   evidence: {
+-    moulding: { ...evidence.moulding, title: "Plastik parça tasarım kılavuzu", kind: "Üretim kılavuzu", supports: "Et kalınlığı, nervürler, vida yuvaları ve kalıptan çıkışı açıklar." },
+-    colour: { ...evidence.colour, title: "Dış koşullara dayanıklı ayna plastikleri", kind: "Malzeme uygulaması", supports: "Boyasız, hava koşullarına dayanıklı ayna parçalarını açıklar." },
+-    snaps: { ...evidence.snaps, title: "Kalıplanmış tırnak tasarım kılavuzu", kind: "Üretim kılavuzu", supports: "Tırnakları ve kalıptan çıkmaları için gereken takım yapısını açıklar." },
+     carrier: { ...evidence.carrier, title: "Yayımlanmış ayna grubu tasarımı", kind: "Yayımlanmış tasarım", supports: "Ayar mekanizmasına bağlı camı, ısıtıcıyı ve destek plakasını açıklar." },
+     optics: { ...evidence.optics, title: "Ayna optiği test prosedürü", kind: "Teknik test kaynağı", supports: "Gerekli görüş alanı ve cam eğriliğinin neden kontrol edilmesi gerektiğini gösterir. Bu eski prosedür güncel bir uygunluk değerlendirmesi değildir." },
+-    heater: { ...evidence.heater, title: "Ayna ısıtıcısının yapısı", kind: "Mevcut ürün sunumu", supports: "İnce folyo ayna ısıtıcılarını ve cam sıcaklık sınırlarını açıklar." },
+-    adjuster: { ...evidence.adjuster, title: "Ayna tahrik modülleri", kind: "Mevcut ürün sunumu", supports: "Ayrı cam ayarı ve elektrikli katlama tahrik ailelerini gösterir." },
+-    bracket: { ...evidence.bracket, title: "Takviyeli plastik ayna braketleri", kind: "Malzeme uygulaması", supports: "Metal yerine kullanılabilecek takviyeli plastik ayna braketlerini ve tabanlarını açıklar." },
+-    seal: { ...evidence.seal, title: "Conta sıkıştırma kılavuzu", kind: "Üretim kılavuzu", supports: "Sızdırmazlık birleşiminde kontrollü sıkıştırmayı açıklar." },
+-    connector: { ...evidence.connector, title: "Kullanılmayan konnektör yuvaları için tapalar", kind: "Mevcut ürün sunumu", supports: "Uyumlu konnektörlerin kullanılmayan yuvaları için sızdırmazlık tapalarını gösterir." },
+     service: { ...evidence.service, title: "Onarılabilir ayna modülleri", kind: "Yayımlanmış tasarım", supports: "Sökülebilir bağlantı elemanlarını ve ayrı onarılabilen ayna modüllerini açıklar." },
+     fold: { ...evidence.fold, title: "Katlama tahriki ve mafsal yerleşimi", kind: "Yayımlanmış tasarım", supports: "Motoru, redüksiyon dişlilerini ve ayna mafsalını açıklar." },
+     signal: { ...evidence.signal, title: "Ayna sinyal lambasının yapısı", kind: "Yayımlanmış tasarım", supports: "Lamba gövdesini, lensi, ışık kılavuzunu ve devre kartını açıklar." },
+     puddle: { ...evidence.puddle, title: "Zemin aydınlatma modülü", kind: "Yayımlanmış tasarım", supports: "Zemine yönlendirilmiş, korumalı dış aydınlatmayı açıklar." },
+-    detection: { ...evidence.detection, title: "Kör nokta uyarı sistemi", kind: "Mevcut sistem açıklaması", supports: "Araç algılama sensörleri ile aynadaki uyarı ışığının farklı görevlerini açıklar." },
+-    camera: { ...evidence.camera, title: "Geniş açılı araç kameraları", kind: "Mevcut ürün sunumu", supports: "Yakın alan araç kameralarının görüş alanını açıklar." },
+     cameraSeal: { ...evidence.cameraSeal, title: "Sızdırmaz araç kamerasının yapısı", kind: "Yayımlanmış tasarım", supports: "Lens kovanını, muhafazayı ve su geçirmez arayüzleri açıklar." },
+-    cameraSetup: { ...evidence.cameraSetup, title: "Çevre görüş kamerası ayarı", kind: "Sistem ürün bilgisi", supports: "Çok kameralı bir araç sisteminde kalibrasyonu açıklar. Bu açıklayıcı aynanın ayar sürecini tanımlamaz." },
+     dimming: { ...evidence.dimming, title: "Elektrikle kararan aynanın katmanları", kind: "Yayımlanmış tasarım", supports: "Aktif optik katmanları, elektrik bağlantılarını ve sızdırmaz cam yapısını açıklar." },
+   },
+ };
+--- a/src/lib/i18n/mirror-nl.ts
++++ b/src/lib/i18n/mirror-nl.ts
+@@ -107,6 +107,7 @@
+     liveHint: "Sleep om te draaien. Kies een onderdeel om het te bekijken. Scrol verticaal om verder te lezen.",
+     staticHint: "Bekijk de onderdelen hieronder of laad het interactieve model.",
+     retry: "Opnieuw proberen", load: "3D-viewer laden", controls: "Bediening 3D-viewer",
++    fullscreenOpen: "Volledig scherm openen", fullscreenClose: "Viewer sluiten", fullscreenHint: "Sleep om te draaien. Knijp om te zoomen. Scroll omlaag voor onderdelen.",
+     explode: "Onderdelen uit elkaar", explodeLabel: "Openwerken van de constructie", stop: "Animatie stoppen", reverse: "Animatie omkeren",
+     animate: "Openwerken animeren", reset: "Weergave herstellen", zoomIn: "Inzoomen", zoomOut: "Uitzoomen", zoom: "Zoom",
+     explore: "Ontdek de onderdelen", optionsHint: "Een optioneel onderdeel kiezen schakelt over naar de benodigde uitvoering.",
+@@ -119,24 +120,13 @@
+   },
+   parts: parts.map((part) => ({ ...part, ...partCopy[part.id] })),
+   evidence: {
+-    moulding: { ...evidence.moulding, title: "Ontwerpgids voor kunststof onderdelen", kind: "Productierichtlijn", supports: "Verklaart wanddikte, ribben, schroefbussen en ontvorming." },
+-    colour: { ...evidence.colour, title: "Weerbestendige spiegelkunststoffen", kind: "Materiaaltoepassing", supports: "Beschrijft ongelakte, weerbestendige spiegelonderdelen." },
+-    snaps: { ...evidence.snaps, title: "Ontwerpgids voor gegoten clips", kind: "Productierichtlijn", supports: "Verklaart klikverbindingen en het gereedschap dat nodig is om ze te ontvormen." },
+     carrier: { ...evidence.carrier, title: "Gepubliceerde spiegelconstructie", kind: "Gepubliceerd ontwerp", supports: "Beschrijft glas, verwarming en een achterplaat die aan een verstelling is bevestigd." },
+     optics: { ...evidence.optics, title: "Testprocedure voor spiegeloptiek", kind: "Technische testreferentie", supports: "Laat zien waarom zichtveld en glaskromming moeten worden gecontroleerd. Deze historische procedure is geen actuele conformiteitsbeoordeling." },
+-    heater: { ...evidence.heater, title: "Constructie van spiegelverwarming", kind: "Bestaand productaanbod", supports: "Beschrijft dunne folieverwarming voor spiegels en grenzen voor glastemperatuur." },
+-    adjuster: { ...evidence.adjuster, title: "Spiegelaandrijfmodules", kind: "Bestaand productaanbod", supports: "Toont aparte productfamilies voor glasverstelling en elektrisch inklappen." },
+-    bracket: { ...evidence.bracket, title: "Versterkte kunststof spiegelbeugels", kind: "Materiaaltoepassing", supports: "Beschrijft versterkte kunststof voor spiegelbeugels en voeten als alternatief voor metaal." },
+-    seal: { ...evidence.seal, title: "Richtlijn voor pakkingcompressie", kind: "Productierichtlijn", supports: "Verklaart gecontroleerde samendrukking bij een afdichtingsverbinding." },
+-    connector: { ...evidence.connector, title: "Afdichtpluggen voor ongebruikte connectorposities", kind: "Bestaand productaanbod", supports: "Toont afdichtpluggen voor ongebruikte posities in compatibele connectors." },
+     service: { ...evidence.service, title: "Repareerbare spiegelmodules", kind: "Gepubliceerd ontwerp", supports: "Beschrijft losneembare bevestigingen en afzonderlijk repareerbare spiegelmodules." },
+     fold: { ...evidence.fold, title: "Inklapaandrijving en draaipunt", kind: "Gepubliceerd ontwerp", supports: "Beschrijft een motor, reductietandwielen en het draaipunt van de spiegel." },
+     signal: { ...evidence.signal, title: "Constructie van de spiegelrichtingaanwijzer", kind: "Gepubliceerd ontwerp", supports: "Beschrijft een lampbehuizing, lens, lichtgeleider en printplaat." },
+     puddle: { ...evidence.puddle, title: "Module voor grondverlichting", kind: "Gepubliceerd ontwerp", supports: "Beschrijft beschermde buitenverlichting die op de grond is gericht." },
+-    detection: { ...evidence.detection, title: "Dodehoekwaarschuwingssysteem", kind: "Bestaande systeembeschrijving", supports: "Maakt onderscheid tussen de detectiesensoren van het voertuig en het waarschuwingslicht in de spiegel." },
+-    camera: { ...evidence.camera, title: "Groothoekcamera's voor voertuigen", kind: "Bestaand productaanbod", supports: "Beschrijft het zichtveld van voertuigcamera's voor de nabije omgeving." },
+     cameraSeal: { ...evidence.cameraSeal, title: "Afgedichte voertuigcamera", kind: "Gepubliceerd ontwerp", supports: "Beschrijft de lenshouder, behuizing en waterdichte aansluitvlakken." },
+-    cameraSetup: { ...evidence.cameraSetup, title: "Afstelling van rondomzichtcamera's", kind: "Systeemproductinformatie", supports: "Beschrijft kalibratie in een voertuigsysteem met meerdere camera's. Dit specificeert niet de afstelling van deze illustratieve spiegel." },
+     dimming: { ...evidence.dimming, title: "Lagen van elektrisch dimmend spiegelglas", kind: "Gepubliceerd ontwerp", supports: "Beschrijft actieve optische lagen, elektrische aansluitingen en afgedichte glasconstructie." },
+   },
+ };
+--- a/src/components/HomePage.tsx
++++ b/src/components/HomePage.tsx
+@@ -36,6 +36,7 @@
+           menu: dict.nav.menu,
+         }}
+         sectionSpy
++        themeText="Theme"
+         desktopFrom="xl"
+         cvDownload={{ href: dict.profile.cvPath, label: dict.nav.downloadCv }}
+         contactCta={{ href: "#contact", label: dict.nav.discuss }}
+@@ -54,12 +55,7 @@
+         />
+         <Credentials dict={dict} />
+         <AiDigital dict={dict} />
+-        <details className="container-site py-6">
+-          <summary className="focus-ring cursor-pointer text-base font-medium text-ink">
+-            {dict.guventech.projectsHeading}
+-          </summary>
+-          <Guventech dict={dict} />
+-        </details>
++        <Guventech dict={dict} />
+         <Contact dict={dict} />
+       </main>
+       <Footer locale={locale} dict={dict} person="guven" />
+--- a/src/components/Guventech.tsx
++++ b/src/components/Guventech.tsx
+@@ -86,7 +86,7 @@
+             ))}
+           </div>
+         </div>
+-        <div className="mt-12 border-t border-line pt-10">
++        {dict.guventech.projects.length > 0 && <div className="mt-12 border-t border-line pt-10">
+           <Reveal>
+             <h3 className="heading-card text-ink">{dict.guventech.projectsHeading}</h3>
+           </Reveal>
+@@ -111,7 +111,7 @@
+               </Reveal>
+             ))}
+           </div>
+-        </div>
++        </div>}
+       </div>
+     </section>
+   );
+--- a/src/components/Nav.tsx
++++ b/src/components/Nav.tsx
+@@ -32,6 +32,7 @@
+   };
+   /** Highlight the in-view section link (Guven). */
+   sectionSpy?: boolean;
++  themeText?: string;
+   /** Breakpoint where the full desktop bar appears. */
+   desktopFrom?: "md" | "xl";
+   /** Compact CV control on the desktop bar + secondary button in the mobile menu. */
+@@ -80,6 +81,7 @@
+   links,
+   labels,
+   sectionSpy = false,
++  themeText,
+   desktopFrom = "md",
+   cvDownload,
+   contactCta,
+@@ -232,7 +234,8 @@
+               onLocaleChange={() => setOpen(false)}
+             />
+             <ThemeToggle
+-              labelToLight={labels.themeToLight}
++              visibleLabel={themeText}
++                labelToLight={labels.themeToLight}
+               labelToDark={labels.themeToDark}
+             />
+           </div>
+@@ -316,6 +319,7 @@
+               ) : null}
+               <LanguageSwitcher locale={locale} />
+               <ThemeToggle
++                visibleLabel={themeText}
+                 labelToLight={labels.themeToLight}
+                 labelToDark={labels.themeToDark}
+               />
+@@ -337,7 +341,8 @@
+               <LanguageSwitcher locale={locale} />
+             ) : null}
+             <ThemeToggle
+-              labelToLight={labels.themeToLight}
++              visibleLabel={themeText}
++                labelToLight={labels.themeToLight}
+               labelToDark={labels.themeToDark}
+             />
+             <button
+--- a/src/components/ThemeToggle.tsx
++++ b/src/components/ThemeToggle.tsx
+@@ -58,10 +58,12 @@
+ 
+ export function ThemeToggle({
+   className = "",
++  visibleLabel,
+   labelToLight = "Switch to light theme",
+   labelToDark = "Switch to dark theme",
+ }: {
+   className?: string;
++  visibleLabel?: string;
+   labelToLight?: string;
+   labelToDark?: string;
+ }) {
+@@ -96,10 +98,11 @@
+     <button
+       type="button"
+       onClick={toggle}
+-      className={`focus-ring inline-flex h-11 w-11 min-h-11 min-w-11 items-center justify-center border border-line text-ink transition hover:border-ink ${className}`}
++      className={`focus-ring inline-flex h-11 ${visibleLabel ? "gap-2 px-3" : "w-11"} min-h-11 min-w-11 items-center justify-center border border-line text-ink transition hover:border-ink ${className}`}
+       aria-label={ready ? label : labelToLight}
+       title={ready ? label : undefined}
+     >
++      {visibleLabel && <span>{visibleLabel}</span>}
+       {theme === "dark" ? (
+         <svg
+           aria-hidden="true"
+--- a/src/lib/facts.ts
++++ b/src/lib/facts.ts
+@@ -34,7 +34,7 @@
+   },
+   /** One launch sentence: plants + countries, no duplicate country list. */
+   countriesSentence: {
+-    en: "Led production engineering for new vehicle launches at five plants, working with teams in the UK, Türkiye, Czechia, France and Japan; led a team of nearly 50 production operators, and engineering teams of 3.",
++    en: "Led production engineering for new vehicle launches at five plants, working with teams in the UK, Türkiye, Czechia, France and Japan. Led a team of nearly 50 production operators, and engineering teams of 3.",
+     tr: "İngiltere, Türkiye, Çekya, Fransa ve Japonya’da ekiplerle çalışarak beş fabrikada yeni araç lansmanları için üretim mühendisliğine liderlik ettim; yaklaşık 50 üretim operatöründen oluşan bir ekibi ve 3 kişilik mühendislik ekiplerini yönettim.",
+     nl: "Leidde productie-engineering voor nieuwe voertuiglanceringen in vijf fabrieken, samenwerkend met teams in het VK, Turkije, Tsjechië, Frankrijk en Japan; gaf leiding aan een team van bijna 50 productieoperators en engineeringteams van 3.",
+   },
+--- a/src/lib/content.ts
++++ b/src/lib/content.ts
+@@ -51,7 +51,7 @@
+   ],
+   education: [
+     {
+-      school: "NUCB Business School — Nagoya University of Commerce & Business, Japan",
++      school: "NUCB Business School, Nagoya University of Commerce & Business, Japan",
+       degree: "MBA (Honours), Global Leader Program",
+       period: "2011–2012",
+     },
+--- a/e2e/mirror.spec.ts
++++ b/e2e/mirror.spec.ts
+@@ -53,7 +53,7 @@
+       const cv = mirror.getByRole("link", { name: mirrorEn.ui.cv });
+       expect((await page.request.get((await cv.getAttribute("href"))!)).ok()).toBe(true);
+       await load(page);
+-      await expect(page.locator("#mirror canvas")).toHaveCSS("touch-action", "pan-y pinch-zoom");
++      await expect(page.locator("#mirror canvas")).toHaveCSS("touch-action", width < 768 ? "none" : "pan-y pinch-zoom");
+       await mirror.screenshot({ path: testInfo.outputPath("mirror-live.png") });
+     });
+   }

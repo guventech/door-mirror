@@ -42,11 +42,11 @@ npm run build
 
 The asset command merges compatible geometry within each selectable group and exports `public/mirror/mirror.glb`. It also writes measured statistics to `public/mirror/model-info.json`. The browser suite captures a transparent poster from the actual Low-spec scene. Copy it after intentional geometry or framing changes, not after every test run.
 
-The current GLB is 1,603,404 bytes with 29,604 triangles, 14 selectable groups and 68 render meshes. The fifteenth logical entry, auto-dimming, changes the existing glass surface. Materials and dimensions are illustrative. The model is a visualization, not a manufacturing drawing or a validated structural design.
+The current GLB is 1,604,736 bytes with 29,604 triangles, 14 selectable groups and 68 render meshes. The fifteenth logical entry, auto-dimming, changes the existing glass surface. Materials and dimensions are illustrative. The model is a visualization, not a manufacturing drawing or a validated structural design.
 
 ## Manufacturing evidence
 
-Every part insight separates its function, a conditional cost proposal, checks still needed and links to primary evidence. The sources include manufacturing guidance, current component offerings and published designs. A patent describes an architecture, not proof of market adoption or permission to reproduce it. The original geometry does not copy a commercial mirror.
+Every part insight separates its function, a cost proposal and checks still needed. Links are optional and restricted to existing neutral patent and public road-safety references. Parts without a neutral source retain their explanation and limits without a link. A patent describes an architecture, not proof of market adoption or permission to reproduce it. The original geometry does not copy a commercial mirror.
 
 The [manufacturing review](docs/manufacturing-review.md) covers all fifteen logical entries. The repaired illustration includes an inward-facing housing wall, connected ribs, hollow screw posts, a glass carrier, a two-terminal heater circuit, an upright fold pivot and option apertures with blanks. The signal and camera have exposed outward/downward sight lines, checked by raycasts against the whole assembled model.
 
@@ -89,3 +89,7 @@ pwsh -File .\scripts\publish-github.ps1
 ```
 
 The script checks the signed-in account and target, commits the project, creates `main`, creates the public repository and pushes it. It preserves a separate local feature branch and does not force-push or alter a pre-existing unrelated repository. It requires working GitHub CLI authentication and normal network access. It has not been executed in the restricted agent session.
+
+## Website corrections and phone view
+
+The prepared website patch and application instructions are in handoff/README.md. The website checkout has not been changed in this session. The standalone app now opens a native full-screen viewer on phones, with a large Close viewer button, pinch zoom and an Open full screen button for returning. The exploded layout has pairwise clearance checks for all specifications and a check that separated module envelopes do not cross again during the motion.

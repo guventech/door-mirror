@@ -1,5 +1,19 @@
 # Door mirror task record
 
+## Recovered six-issue follow-up
+
+- [x] Recover the interrupted changes without discarding existing work.
+- [x] Separate every module at full explosion and check procedural and exported bounding boxes in all levels.
+- [x] Retain neutral evidence only and keep unlinked explanations and limits.
+- [x] Replace the assembly warning with two sentences and remove requested punctuation from the prepared English website copy.
+- [x] Fix selected-row styling and cover Housing followed by Side camera.
+- [x] Prepare populated project cards, an empty-section guard and a visible theme label for the profile only.
+- [x] Check expanded evidence below the fixed desktop and phone dialog headers in the local fixture.
+- [x] Re-run the production build, 21 unit tests and 17 Chrome browser tests, including desktop and 390px console checks.
+- [ ] Apply the prepared patch in the website workspace and verify the full /guven page. No website files were edited here.
+- [ ] Verify Safari and a physical phone.
+
+
 ## Completed local build
 
 - [x] Read the build brief and investigation and apply the user's standalone scope correction.
@@ -54,3 +68,13 @@
 - [x] Leave the destination site repository untouched. Its existing untracked notes/tasks were not changed.
 
 The first publication was completed by the owner and independently verified at commit 0cc971e on public guventech/door-mirror, with main tracking origin/main. This follow-up is a local change set and has not been committed or pushed.
+
+## Current showcase follow-up
+
+- [x] Separate every exploded module and add full-pair and motion checks.
+- [x] Remove supplier references from visible evidence and retain link-free limits.
+- [x] Add phone full-screen loading, Close, reopening and pinch zoom.
+- [x] Prepare website corrections for selection styling, copy, projects, theme label and evidence scrolling.
+- [x] Check the patched React components at desktop and 390px in a local test page.
+- [ ] Apply the handoff patch in the website workspace and run the full Next.js workflow.
+- [ ] Check the live profile, Safari and physical phone hardware.

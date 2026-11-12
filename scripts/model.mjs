@@ -423,13 +423,6 @@ export function createMirror() {
       0.025,
     );
   const base = group("base", [-2, -0.15, 0.7]);
-  // Clear the optical stack, lift through the mouth, then move sideways.
-  base.userData.explodePath = [
-    { at: 0, offset: [0, 0, 0] },
-    { at: 0.35, offset: [0, 0, 0] },
-    { at: 0.65, offset: [0, 0, 0.55] },
-    { at: 1, offset: [-2, -0.15, 0.7] },
-  ];
   const footOutline = new T.Shape();
   footOutline.moveTo(-0.26, -0.715);
   footOutline.lineTo(0.26, -0.715);
@@ -507,12 +500,6 @@ export function createMirror() {
   spindle.name = "basePivotSpindle";
   spindle.userData.feature = "verticalPivot";
   const gasket = group("gasket", [-2.8, -0.15, 0.7]);
-  gasket.userData.explodePath = [
-    { at: 0, offset: [0, 0, 0] },
-    { at: 0.35, offset: [0, 0, 0] },
-    { at: 0.65, offset: [0, 0, 0.55] },
-    { at: 1, offset: [-2.8, -0.15, 0.7] },
-  ];
   const sealShape = new T.Shape();
   sealShape.moveTo(-0.33, -0.74);
   sealShape.lineTo(0.33, -0.74);
@@ -740,5 +727,41 @@ export function createMirror() {
   housing.add(signalBlank);
   box(signalBlank, [0.028, 0.15, 0.31], charcoal, [1.478, -0.25, 0.035], 0.01);
   box(signalBlank, [0.018, 0.13, 0.29], rubber, [1.454, -0.25, 0.035], 0.008);
+  // Authored display sequence. These are separate modules, not a service procedure.
+  const layout = {
+    cap: [[0, 1.6, -0.2], 0, 0.15],
+    glass: [[0, 0, 3.5], 0, 0.15],
+    heater: [[0, 0, 2.65], 0.15, 0.25],
+    actuator: [[0, 0, 1.9], 0.25, 0.35],
+    fasteners: [[0, 1.5, 1.2], 0.15, 0.25],
+    harness: [[0, -1.85, 0.1], 0.15, 0.25],
+    foldMotor: [[-0.4, 1.9, 0.6], 0.35, 0.45],
+    turnSignal: [[1, -0.2, -0.8], 0.45, 0.55],
+    puddleLamp: [[-0.5, -1.2, -0.6], 0.45, 0.55],
+    blindSpot: [[1.1, 0.8, 1.3], 0.45, 0.55],
+    camera: [[1.8, -0.9, 0.7], 0.55, 0.65],
+    housing: [[0, 0, -0.8], 0.65, 0.75],
+    base: [[-2.7, -0.15, 0.85], 0.75, 0.9],
+    gasket: [[-3.15, -0.15, 0.85], 0.9, 1],
+  };
+  for (const part of root.children) {
+    const [offset, start, finish] = layout[part.name];
+    part.userData.explode = offset;
+    part.userData.explodePath = [
+      { at: 0, offset: [0, 0, 0] },
+      ...(start ? [{ at: start, offset: [0, 0, 0] }] : []),
+      ...(["base", "gasket"].includes(part.name)
+        ? [
+            {
+              at: start + (finish - start) * 0.55,
+              offset: part.name === "base" ? [0, 0, 0.85] : [-3.15, -0.15, 0],
+            },
+          ]
+        : []),
+      { at: finish, offset },
+      ...(finish < 1 ? [{ at: 1, offset }] : []),
+    ];
+    delete part.userData.explodeFinish;
+  }
   return root;
 }

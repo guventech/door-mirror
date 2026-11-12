@@ -1,5 +1,7 @@
 # Integrate the mirror into bircans.com
 
+For the corrections to the existing website integration, use [the prepared website patch](../handoff/README.md). It includes phone full-screen mode, neutral evidence, selection styling and header-safe evidence scrolling. The renderer now exposes `setFullscreen(active)` to enable pinch zoom inside the phone dialog and restore page scrolling outside it.
+
 ## Recommended location
 
 Use **`https://www.bircans.com/guven#mirror`**, immediately after **How I work**, including its existing A3 Cost Reduction card, and before the SME offer.

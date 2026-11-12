@@ -2,7 +2,67 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "three";
 import { createMirror } from "../scripts/model.mjs";
-import { positionAt } from "../src/parts.ts";
+import { activeParts, positionAt } from "../src/parts.ts";
+
+for (const level of ["Low", "Mid", "High"] as const) {
+  test(`${level}: every module has a separate bounding box at full explosion`, () => {
+    const assembly = createMirror();
+    const enabled = new Set(activeParts(level).map((p) => p.id));
+    const modules = assembly.children.filter((g) =>
+      enabled.has(g.name as never),
+    );
+    for (const group of modules) {
+      group.position.fromArray(
+        positionAt(
+          [0, 0, 0],
+          group.userData.explode,
+          1,
+          group.userData.explodePath,
+        ),
+      );
+    }
+    assembly.updateMatrixWorld(true);
+    for (let i = 0; i < modules.length; i++) {
+      for (let j = i + 1; j < modules.length; j++) {
+        assert.equal(
+          new THREE.Box3()
+            .setFromObject(modules[i])
+            .intersectsBox(new THREE.Box3().setFromObject(modules[j])),
+          false,
+          `${modules[i].name} overlaps ${modules[j].name}`,
+        );
+      }
+    }
+  });
+}
+
+test("separated modules do not cross back through each other during explosion", () => {
+  const assembly = createMirror();
+  const cleared = new Set<string>();
+  for (let step = 0; step <= 100; step++) {
+    for (const group of assembly.children)
+      group.position.fromArray(
+        positionAt(
+          [0, 0, 0],
+          group.userData.explode,
+          step / 100,
+          group.userData.explodePath,
+        ),
+      );
+    assembly.updateMatrixWorld(true);
+    const boxes = assembly.children.map((g) =>
+      new THREE.Box3().setFromObject(g),
+    );
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const key = `${assembly.children[i].name}/${assembly.children[j].name}`;
+        const overlap = boxes[i].intersectsBox(boxes[j]);
+        if (!overlap) cleared.add(key);
+        else assert.ok(!cleared.has(key), `${key} crosses at ${step}%`);
+      }
+    }
+  }
+});
 
 test("the fully exploded bracket clears the housing envelope", () => {
   const assembly = createMirror();
@@ -48,7 +108,7 @@ test("the bracket clears the open face before it moves sideways", () => {
       [0, 0, 0],
       actuator.userData.explode,
       0.35,
-      undefined,
+      actuator.userData.explodePath,
       actuator.userData.explodeFinish,
     )[2],
     actuator.userData.explode[2],

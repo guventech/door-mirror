@@ -11,6 +11,7 @@ export interface MirrorViewer {
   select(id: PartId | null): void;
   reset(): void;
   zoom(factor: number): void;
+  setFullscreen(active: boolean): void;
   dispose(): void;
 }
 type Callbacks = { select(id: PartId): void; fail(): void };
@@ -46,6 +47,8 @@ export async function createViewer(
   controls.target.copy(target);
   controls.enablePan = false;
   controls.enableZoom = false;
+  controls.minDistance = 6;
+  controls.maxDistance = 17;
   controls.enableDamping = false;
   controls.minPolarAngle = Math.PI * 0.15;
   controls.maxPolarAngle = Math.PI * 0.85;
@@ -226,6 +229,10 @@ export async function createViewer(
   }
 
   return {
+    setFullscreen(active) {
+      controls.enableZoom = active;
+      canvas.style.touchAction = active ? "none" : "pan-y pinch-zoom";
+    },
     setLevel(level) {
       const enabled = new Set(activeParts(level).map((p) => p.id));
       groups.forEach((group, id) => {
@@ -244,7 +251,7 @@ export async function createViewer(
       invalidate();
     },
     explode(amount) {
-      model!.scale.setScalar(1.55 - amount * 0.35);
+      model!.scale.setScalar(1.55 - amount * 0.7);
       groups.forEach((group, id) => {
         group.position.fromArray(
           positionAt(

@@ -65,11 +65,16 @@ test("public captions stay qualitative and use short plain punctuation", () => {
   assert.equal(new Set(parts.map((p) => p.id)).size, parts.length);
 });
 
-test("every part insight has resolvable evidence and a stated engineering limit", () => {
+test("every insight has limits and all retained evidence uses neutral hosts", () => {
   for (const part of parts) {
     assert.ok(part.description.length > 30 && part.check.length > 30);
-    assert.ok(part.sources.length > 0);
-    for (const source of part.sources)
+    for (const source of part.sources) {
       assert.equal(new URL(evidence[source].url).protocol, "https:");
+      assert.ok(
+        ["patents.google.com", "www.nhtsa.gov"].includes(
+          new URL(evidence[source].url).hostname,
+        ),
+      );
+    }
   }
 });

@@ -578,6 +578,59 @@ h1 span {
     margin: 0;
   }
 }
+.detail-evidence {
+  scroll-margin-top: 7rem;
+}
+.mobile-open {
+  margin-bottom: 1rem;
+}
+.mobile-open[hidden] {
+  display: none;
+}
+.mobile-viewer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0 12px 24px;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.mobile-viewer::backdrop {
+  background: var(--paper);
+}
+.mobile-close {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: block;
+  width: 100%;
+  min-height: 56px;
+  padding: max(12px, env(safe-area-inset-top)) 16px 12px;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: right;
+  font-weight: 600;
+}
+.mobile-viewer .workbench {
+  margin: 0;
+}
+.mobile-viewer .stage {
+  height: 48dvh;
+  min-height: 280px;
+}
+@media (min-width: 768px) {
+  .mobile-open {
+    display: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
