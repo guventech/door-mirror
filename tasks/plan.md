@@ -1,5 +1,13 @@
 # Standalone door mirror implementation
 
+## Housing calculator clarification, 18 November 2026
+
+The user authorized the proposed follow-up after a read-only comparison. Apply only the housing calculator CTA and explanation in the site's English, Turkish and Dutch dictionaries. Identify the calculator as a separate assumed weight, scrap and moulding-cycle example. Preserve the paint-step cost idea, geometry and calculator inputs. The user subsequently authorized committing both repositories and deploying the site on 18 November 2026.
+
+The standalone owns the model, generated assets, English part data and evidence. The site owns translations, React integration and links. Cost-forge owns numerical examples. Add a read-only `check:site-sync` command for English data and asset hashes, with a fixture check proving caption and asset drift are rejected. Verification results are recorded in tasks/todo.md below the matching follow-up.
+
+Current model: 1,604,736 bytes and 29,604 triangles. The older delivery notes below describe earlier handoff stages.
+
 ## Showcase fixes
 
 The requested fixes are in the local source and `handoff/site-showcase.patch`. They have not been applied to the destination website or deployed. The homepage is untouched.

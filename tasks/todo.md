@@ -1,5 +1,20 @@
 # Door mirror task record
 
+## Housing calculator clarification, 18 November 2026
+
+- [x] Compare standalone and integrated model hashes, English part data, evidence and renderer source.
+- [x] Apply the authorized calculator CTA and explanatory copy in the site EN/TR/NL dictionaries.
+- [x] Preserve the housing paint-step idea and describe the calculator as a separate assumed example.
+- [x] Add source ownership guidance and a read-only `npm run check:site-sync` command.
+- [x] Verify matching data and deliberate caption/asset drift fixtures. Accept formatting-only model metadata differences.
+- [x] Pass the standalone's 23 unit tests, production build and 15 Chrome browser tests. Re-run the sync fixture after the metadata comparison refinement.
+- [x] Pass the site's 11 mirror tests, production build and lint on all three edited dictionaries.
+- [x] Inspect the built site's housing CTA and hint in EN, TR and NL. Verify the existing URL, no automatic GLB request and no viewport overflow. Check TR/NL at 390px width.
+
+`npm run check:site-sync` passes against `../site`. Browser console output was limited to unavailable local Vercel analytics and speed-insights scripts. Safari, physical phones, live calculator contents and translation-owner sign-off were not checked in this follow-up.
+
+Geometry and calculator inputs are unchanged. The user subsequently authorized committing both repositories and deploying the site on 18 November 2026. The older site-handoff checkboxes below remain historical records.
+
 ## Recovered six-issue follow-up
 
 - [x] Recover the interrupted changes without discarding existing work.

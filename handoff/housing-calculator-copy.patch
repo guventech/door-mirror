@@ -1,0 +1,33 @@
+--- a/src/lib/i18n/mirror-en.ts
++++ b/src/lib/i18n/mirror-en.ts
+@@ -284,7 +284,7 @@
+   optionsHint: "Selecting an optional part switches the model to the specification level that includes it.",
+   inactive: "Not in this spec",
+   empty: "Select a part to see what it does, one cost idea (with its conditions), and what I would still need to check.",
+-  costLink: "Estimate this housing (English)", costHint: "The calculator illustrates the cost impact of lower housing weight, less material scrap and a shorter moulding cycle, using assumed values. This is not a measured cost or a full mirror assembly total.",
++  costLink: "Explore a housing cost example (English)", costHint: "This separate example uses assumed housing weight, material scrap and moulding cycle time. It does not calculate the paint-step idea above. It is not a measured cost or a full mirror assembly total.",
+   cv: "Download my CV", contact: "Contact me",
+   close: "Close", closeLabel: "Close part details", construction: "Construction",
+   function: "What it does", idea: "A cost idea", dimming: "Added at High: auto-dimming.",
+--- a/src/lib/i18n/mirror-tr.ts
++++ b/src/lib/i18n/mirror-tr.ts
+@@ -112,7 +112,7 @@
+     animate: "Ayırmayı oynat", reset: "Görünümü sıfırla", zoomIn: "Yakınlaştır", zoomOut: "Uzaklaştır", zoom: "Yakınlık",
+     explore: "Parçaları inceleyin", optionsHint: "İsteğe bağlı bir parça seçildiğinde model o parçayı içeren donanım seviyesine geçer.",
+     inactive: "Bu donanımda yok", empty: "Ne işe yaradığını, koşullu bir maliyet fikrini ve hâlâ kontrol etmem gerekenleri görmek için bir parça seçin.",
+-    costLink: "Bu gövdenin maliyetini tahmin et (İngilizce)", costHint: "Hesaplayıcı, varsayımsal değerlerle daha hafif gövdenin, daha az malzeme firesinin ve daha kısa enjeksiyon çevriminin maliyete etkisini örnekler. Ölçülmüş maliyet veya tüm ayna toplamı değildir.",
++    costLink: "Bir gövde maliyeti örneğini incele (İngilizce)", costHint: "Bu ayrı örnekte gövde ağırlığı, malzeme firesi ve enjeksiyon çevrim süresi için varsayımsal değerler kullanılır. Yukarıdaki boyama adımını kaldırma fikrini hesaplamaz. Ölçülmüş bir maliyet veya tüm aynanın toplam maliyeti değildir.",
+     cv: "Özgeçmişimi indir", contact: "İletişime geç",
+     close: "Kapat", closeLabel: "Parça ayrıntılarını kapat", construction: "Yapı", function: "İşlevi", idea: "Bir maliyet fikri",
+     dimming: "Üstte eklendi: otomatik kararma.", check: "Kontrol edilmesi gerekenler", evidence: "Kaynaklar ve sınırlar",
+--- a/src/lib/i18n/mirror-nl.ts
++++ b/src/lib/i18n/mirror-nl.ts
+@@ -112,7 +112,7 @@
+     animate: "Openwerken animeren", reset: "Weergave herstellen", zoomIn: "Inzoomen", zoomOut: "Uitzoomen", zoom: "Zoom",
+     explore: "Ontdek de onderdelen", optionsHint: "Een optioneel onderdeel kiezen schakelt het model over naar het uitvoeringsniveau dat het bevat.",
+     inactive: "Niet in deze uitvoering", empty: "Kies een onderdeel om te zien wat het doet, één kostenidee (met voorwaarden) en wat ik nog moet controleren.",
+-    costLink: "Raam de kosten van deze behuizing (Engels)", costHint: "De calculator illustreert het kosteneffect van een lichtere behuizing, minder materiaalafval en een kortere spuitgietcyclus, op basis van aangenomen waarden. Dit is geen gemeten kost of totaalkost van de spiegel.",
++    costLink: "Bekijk een kostenvoorbeeld voor een behuizing (Engels)", costHint: "Dit aparte voorbeeld gebruikt aannames voor het gewicht van de behuizing, materiaalafval en de spuitgietcyclustijd. Het berekent niet het effect van het weglaten van de lakstap hierboven. Het is geen gemeten kostprijs of totaalprijs voor de volledige spiegel.",
+     cv: "Mijn cv downloaden", contact: "Neem contact op",
+     close: "Sluiten", closeLabel: "Onderdeeldetails sluiten", construction: "Constructie", function: "Wat het doet", idea: "Een kostenidee",
+     dimming: "Toegevoegd bij Hoog: automatisch dimmen.", check: "Nog te controleren", evidence: "Bronnen en beperkingen",

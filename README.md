@@ -66,6 +66,12 @@ This establishes a clearer representative architecture. Tool release, exact wall
 
 ## Later site integration
 
+### Keeping the integrated copy consistent
+
+The standalone owns procedural geometry, generated assets, English part data and evidence. The site owns its React shell, translated copy and calculator links. The calculator project owns numerical examples. Its housing example uses assumed mass, scrap and cycle time. It does not calculate the housing's paint-step idea or derive inputs from the GLB.
+
+After an intentional handoff, run `npm run check:site-sync`. The read-only command compares the GLB and poster by SHA-256, plus model metadata, English parts and evidence as structured data. It reads `../site` by default. Use `npm run check:site-sync -- C:/path/to/site` for another checkout. A missing checkout or a difference fails the command. Review differences before copying updates, then update Turkish and Dutch copy when English meaning changes. The check does not validate translations or calculator inputs.
+
 **Start with [the Bircans integration handoff](docs/INTEGRATE_BIRCANS.md).** It gives the recommended `/guven#mirror` placement, inspected destination paths, file-copy map, framework adaptations, theme tokens, testing checklist and a prompt for the agent in the other repo.
 
 This app is local and independent. It has no deployment configuration, analytics, accounts or contact form. Existing websites have not been changed.
