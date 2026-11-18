@@ -1,8 +1,16 @@
 # Integrate the mirror into bircans.com
 
+## Current status — 18 November 2026
+
+The host now serves an embedded mirror study at `/guven/mirror`, `/guven/tr/mirror` and `/guven/nl/mirror`. The standalone repository owns procedural geometry, generated assets, English part data and evidence; `guventech/site` owns the React shell, language dictionaries and profile routes; ShouldCost owns numerical costing examples.
+
+Read the current ownership/synchronization section in [the source README](../README.md) before maintenance. `npm run check:site-sync` is a read-only comparison against sibling `../site`, not an authorization to copy files. Inspect the host's current `src/components/MirrorPage.tsx` and `src/components/mirror/` before proposing changes. A new integration, route move, publication or deployment needs a new user request.
+
+**Historical material below:** the original `/guven#mirror` insertion, HowIWork/SmeOffer placement, host-file map, correction patch and copy/paste prompt record a completed earlier plan. They are retained for implementation context, not as current steps to execute. Current source/configuration and the host's instructions take precedence over that old map.
+
 For the corrections to the existing website integration, use [the prepared website patch](../handoff/README.md). It includes phone full-screen mode, neutral evidence, selection styling and header-safe evidence scrolling. The renderer now exposes `setFullscreen(active)` to enable pinch zoom inside the phone dialog and restore page scrolling outside it.
 
-## Recommended location
+## Historical recommended location
 
 Use **`https://www.bircans.com/guven#mirror`**, immediately after **How I work**, including its existing A3 Cost Reduction card, and before the SME offer.
 
@@ -12,7 +20,7 @@ The current site checkout renders the neutral `BrandLanding` on `/`, `/tr` and `
 
 Do not add a new homepage card or profile link as part of this integration. If the owner later changes the homepage's purpose, treat that as a separate design decision.
 
-## What exists today
+## Original inspected state
 
 - Source: `https://github.com/guventech/door-mirror`.
 - Local source checkout: `C:\Users\guven\projects\door-mirror`.
@@ -179,6 +187,6 @@ All evidence remains ordinary outbound links with `rel="noopener noreferrer"` wh
 10. Check Safari and a real phone where available. Report emulation separately from hardware results.
 11. Open a focused PR with a Vercel preview under the destination repository's workflow. Do not merge or deploy production without the owner's instruction.
 
-## Prompt to paste into the other repo
+## Historical prompt — do not reuse as a current work order
 
 > Integrate the revised generic mirror study from `guventech/door-mirror` into this website. Read the source project's `docs/INTEGRATE_BIRCANS.md` and this repository's AGENTS.md first. Use the source revision that includes the staged bracket motion and framework-neutral ViewerOptions. Add a native React section at `/guven#mirror`, after HowIWork and before SmeOffer. Reuse the renderer, part registry, evidence and same-origin assets. Match the existing theme tokens, Source Serif 4 / Geist typography, section spacing and controls. Preserve click-only loading, accessibility, conditional insights and the corrected explode path. Do not import the standalone global page, inject its HTML or add an iframe. Keep the neutral homepage and Sevgihan pages unchanged. Reuse existing CV/contact targets. Complete translations or explicitly gate the initial section to English. Verify the profile end to end and provide a preview PR. Do not deploy production or merge without my instruction.

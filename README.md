@@ -64,7 +64,9 @@ This establishes a clearer representative architecture. Tool release, exact wall
 - `tasks/agreement.md`: interaction and content contract.
 - `tasks/verification.md`: actual checks and remaining review gaps.
 
-## Later site integration
+## Current source ownership and website relationship
+
+As of 18 November 2026, the separate `guventech/site` repository serves the embedded study at `/guven/mirror`, `/guven/tr/mirror` and `/guven/nl/mirror`, linked from the profile's Tools section. This standalone project remains independent. Do not add another homepage section, move the study or apply a historical handoff patch without a new request and inspection of the current host.
 
 ### Keeping the integrated copy consistent
 
@@ -72,9 +74,9 @@ The standalone owns procedural geometry, generated assets, English part data and
 
 After an intentional handoff, run `npm run check:site-sync`. The read-only command compares the GLB and poster by SHA-256, plus model metadata, English parts and evidence as structured data. It reads `../site` by default. Use `npm run check:site-sync -- C:/path/to/site` for another checkout. A missing checkout or a difference fails the command. Review differences before copying updates, then update Turkish and Dutch copy when English meaning changes. The check does not validate translations or calculator inputs.
 
-**Start with [the Bircans integration handoff](docs/INTEGRATE_BIRCANS.md).** It gives the recommended `/guven#mirror` placement, inspected destination paths, file-copy map, framework adaptations, theme tokens, testing checklist and a prompt for the agent in the other repo.
+The [Bircans integration handoff](docs/INTEGRATE_BIRCANS.md) retains historical file-copy and lifecycle guidance. Its old `/guven#mirror` insertion location, component map and one-time prompt are not the current site plan. For maintenance, inspect the current host route/components and use the read-only synchronization check above before proposing a focused handoff.
 
-This app is local and independent. It has no deployment configuration, analytics, accounts or contact form. Existing websites have not been changed.
+This standalone app has no deployment configuration, analytics, accounts or contact form. The following technical notes describe the original handoff; they do not authorize a new integration or a change to the existing website.
 
 Use the viewer lifecycle API and parts registry inside the target site's component. `createViewer` accepts an explicit `modelUrl` and localized `canvasLabel` so the renderer works without Vite. Keep the dynamic import inside explicit activation. Copy the local assets to the intended same-origin directory and adjust asset URLs and styles to the host. Dispose the viewer when its component unmounts. Move the English copy into the host's dictionaries and add translations before exposing the section in other languages. Add CV/contact links only when actual destinations are available.
 
@@ -86,7 +88,9 @@ The production viewer chunk is about 149 KB gzipped and loads only after activat
 
 Implementation references: [three.js GLTFLoader](https://threejs.org/docs/#examples/en/loaders/GLTFLoader), [OrbitControls](https://threejs.org/docs/#examples/en/controls/OrbitControls) and [Vite](https://vite.dev/guide/).
 
-## Initial GitHub publication
+## Historical initial GitHub publication
+
+The `guventech/door-mirror` repository now exists. The one-time instructions below record the original setup and are not an instruction to rerun publication. Inspect current Git state/remotes and obtain publication authorization for any new release.
 
 The user authorized a public repository at `guventech/door-mirror`. If the agent session cannot write Git metadata or reach GitHub from its CLI, run this once from a normal PowerShell terminal in this project:
 
@@ -96,6 +100,6 @@ pwsh -File .\scripts\publish-github.ps1
 
 The script checks the signed-in account and target, commits the project, creates `main`, creates the public repository and pushes it. It preserves a separate local feature branch and does not force-push or alter a pre-existing unrelated repository. It requires working GitHub CLI authentication and normal network access. It has not been executed in the restricted agent session.
 
-## Website corrections and phone view
+## Historical website corrections and phone view
 
-The prepared website patch and application instructions are in handoff/README.md. The website checkout has not been changed in this session. The standalone app now opens a native full-screen viewer on phones, with a large Close viewer button, pinch zoom and an Open full screen button for returning. The exploded layout has pairwise clearance checks for all specifications and a check that separated module envelopes do not cross again during the motion.
+The prepared website patch and original application instructions are in handoff/README.md. They describe an earlier correction pass, not an outstanding request to reapply it. Inspect the current host and synchronization results first. The standalone app opens a native full-screen viewer on phones, with a large Close viewer button, pinch zoom and an Open full screen button for returning. The exploded layout has pairwise clearance checks for all specifications and a check that separated module envelopes do not cross again during the motion.
