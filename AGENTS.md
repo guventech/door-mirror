@@ -1,6 +1,6 @@
 # Door mirror
 
-Build a standalone interactive cost-engineering showcase here. The user will integrate it into their site later. Do not edit or deploy the existing site.
+Maintain the standalone interactive cost-engineering study here. The separate `site` repository already serves its own embedded study at `/guven/mirror` and localized equivalents. Read the current ownership section in `README.md`; old insertion/publication prompts are historical. Editing this repository does not authorize editing or deploying the existing site.
 
 ## Product contract
 
