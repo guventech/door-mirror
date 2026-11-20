@@ -1,5 +1,7 @@
 # Door mirror
 
+Local icon update (20 November 2026): the owner selected the teal mirror-housing/mount design for the standalone favicon and portfolio card. Prepared on `feat/mirror-icon`; the owner approved commit, publication and merge. Consult PR history and hosting for release status. The production build and direct site-sync check pass. In-process unit execution passes 22 geometry/model/parts tests; the remaining site-sync subprocess test is blocked by process permissions. A fresh browser checked the built favicon. Embedded portfolio routes retain the portfolio favicon; no model or interaction changed.
+
 A standalone, interactive cost-engineering study by Guven. Rotate an original generic exterior mirror, separate its parts, switch Low / Mid / High specification and explore qualitative cost ideas.
 
 ![The repaired housing interior in an exploded assembly](docs/images/housing-interior.png)
